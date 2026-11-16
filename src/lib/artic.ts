@@ -1,4 +1,5 @@
 import type { Artwork, ArtworkErrorCode, ArtworkResult, ArtworkImageResult } from "@/types/artwork";
+import type { ArtworkSearchQuery, ArtworkSearchData, ArtworkSearchResult, ArtworkSearchErrorCode } from "@/types/artwork-search";
 
 const API_BASE = "https://api.artic.edu/api/v1";
 const FIELDS = [
@@ -7,6 +8,93 @@ const FIELDS = [
   "short_description", "image_id", "is_public_domain", "copyright_notice",
   "credit_line", "thumbnail",
 ].join(",");
+
+export const SEARCH_PAGE_SIZE = 9;
+export const MAX_SEARCH_PAGE = 50;
+export const MAX_SEARCH_TEXT = 120;
+
+/** Nepriimame masyvų, objektų ar neapdorotų Elasticsearch užklausų iš naršyklės. */
+export function validateArtworkSearch(input: { q?: unknown; artist?: unknown; page?: unknown }): ArtworkSearchQuery | null {
+  const clean = (value: unknown): string | null => value === undefined ? ""
+    : typeof value === "string" && value.length <= MAX_SEARCH_TEXT && !/[\u0000-\u001f\u007f]/.test(value)
+      ? value.trim().replace(/\s+/g, " ") : null;
+  const q = clean(input.q), artist = clean(input.artist);
+  const rawPage = input.page ?? "1";
+  if (q === null || artist === null || (!q && !artist)
+    || typeof rawPage !== "string" || !/^[1-9]\d?$/.test(rawPage)) return null;
+  const page = Number(rawPage);
+  return page <= MAX_SEARCH_PAGE ? { q, artist, page } : null;
+}
+
+export const artworkSearchErrorMessages: Record<ArtworkSearchErrorCode, string> = {
+  invalid_query: "Įrašyk raktažodį arba autorių (iki 120 ženklų). Puslapio numeris turi būti nuo 1 iki 50.",
+  rate_limited: "Muziejaus užklausų limitas pasiektas. Palauk minutę ir bandyk dar kartą.",
+  timeout: "Paieška užtruko per ilgai. Pabandyk dar kartą po kelių akimirkų.",
+  unavailable: "Šiuo metu muziejaus paieška nepasiekiama. Pabandyk vėliau.",
+  invalid_response: "Muziejus grąžino neatpažįstamus paieškos duomenis. Pabandyk vėliau.",
+};
+
+export function parseArtworkSearchResponse(payload: unknown, page: number): ArtworkSearchData {
+  if (!record(payload) || !Array.isArray(payload.data) || !record(payload.pagination)
+    || payload.data.length > SEARCH_PAGE_SIZE) throw new Error("invalid_response");
+  const pagination = payload.pagination;
+  if (!Number.isSafeInteger(pagination.total) || (pagination.total as number) < payload.data.length
+    || pagination.current_page !== page || pagination.limit !== SEARCH_PAGE_SIZE) throw new Error("invalid_response");
+  const seen = new Set<number>();
+  const items = payload.data.map((data: unknown) => {
+    if (!record(data) || typeof data.id !== "number" || parseArtworkId(data.id) === null || seen.has(data.id)) {
+      throw new Error("invalid_response");
+    }
+    seen.add(data.id);
+    // B tikrinimas išlaiko vienodas metaduomenų, teisių ir IIIF taisykles.
+    return parseArtworkResponse({ data, config: payload.config }, data.id);
+  });
+  const total = pagination.total as number;
+  return { items, total, page, totalPages: Math.min(MAX_SEARCH_PAGE, Math.ceil(total / SEARCH_PAGE_SIZE)) };
+}
+
+/** Užklausa sudaroma tik serveryje iš patikrintų teksto laukų. */
+export async function searchArtworks(input: { q?: unknown; artist?: unknown; page?: unknown }, fetcher: typeof fetch = fetch): Promise<ArtworkSearchResult> {
+  const query = validateArtworkSearch(input);
+  if (!query) return { ok: false, code: "invalid_query" };
+  const filter: object[] = [{ term: { is_public_domain: true } }, { exists: { field: "image_id" } }];
+  if (query.artist) filter.push({ match_phrase: { artist_title: query.artist } });
+  const url = new URL(`${API_BASE}/artworks/search`);
+  url.searchParams.set("params", JSON.stringify({
+    fields: ["id", "title", "artist_title", "date_display", "image_id", "is_public_domain", "copyright_notice", "thumbnail"],
+    limit: SEARCH_PAGE_SIZE, page: query.page,
+    query: { bool: { filter, ...(query.q ? { must: [{ multi_match: { query: query.q, fields: ["title^3", "artist_title"], operator: "and" } }] } : {}) } },
+  }));
+  try {
+    const response = await fetcher(url.href, {
+      headers: { Accept: "application/json", "AIC-User-Agent": "ArtMystery AI" },
+      signal: AbortSignal.timeout(10000), redirect: "error", next: { revalidate: 3600 },
+    });
+    if (response.status === 429) { await response.body?.cancel(); return { ok: false, code: "rate_limited" }; }
+    if (!response.ok) { await response.body?.cancel(); return { ok: false, code: "unavailable" }; }
+    const maxBytes = 128000;
+    if (!response.body || !response.headers.get("content-type")?.toLowerCase().includes("application/json")
+      || Number(response.headers.get("content-length")) > maxBytes) {
+      await response.body?.cancel(); return { ok: false, code: "invalid_response" };
+    }
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let text = "", size = 0;
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > maxBytes) { await reader.cancel(); return { ok: false, code: "invalid_response" }; }
+      text += decoder.decode(value, { stream: true });
+    }
+    text += decoder.decode();
+    try { return { ok: true, data: parseArtworkSearchResponse(JSON.parse(text) as unknown, query.page) }; }
+    catch { return { ok: false, code: "invalid_response" }; }
+  } catch (error) {
+    const timeout = error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError");
+    return { ok: false, code: timeout ? "timeout" : "unavailable" };
+  }
+}
 
 export function parseArtworkId(value: string | number): number | null {
   const text = String(value);

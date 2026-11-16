@@ -14,7 +14,7 @@ export default function HomePage() {
         <Link href="/explore" className="mt-9 inline-flex min-h-12 items-center gap-6 bg-ink px-7 py-4 text-sm text-paper hover:bg-gold">
           Pradėti tyrinėti <span aria-hidden="true">↗</span>
         </Link>
-        <p className="mt-5 text-sm text-muted">Kuriama: meno paieška bus prijungta kitame etape.</p>
+        <p className="mt-5 text-sm text-muted">Ieškok pagal kūrinio pavadinimą, raktažodį arba autorių.</p>
       </section>
       <section aria-labelledby="journey-title" className="border-t border-line py-12 sm:py-16">
         <div className="grid gap-10 md:grid-cols-[1fr_2fr] md:gap-16">

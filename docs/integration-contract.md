@@ -1,6 +1,8 @@
 # Integracijos susitarimas su Kūrėju A
 
-Tai siūloma suderinamumo sutartis pagal MASTER PROMPT. A dar jos neperžiūrėjo.
+Tai suderinamumo pagrindas pagal MASTER PROMPT. A jį peržiūrėjo 2026-11-16;
+A perėmimo rezultatai yra `docs/phase-1-a-report.md`. Tai nėra abiejų partnerių
+rašymo teisių ar visų būsimų integracijų patvirtinimas.
 Pagrindas paruoštas viename projekte, naudojant `src/`, App Router ir `@/*` aliasą.
 Nenaudojami Prisma, Redux, Docker ar papildomi UI karkasai.
 
@@ -22,8 +24,12 @@ jo ir Next.js papildinių atnaujinimą kartu, prieš galutinį projekto vertinim
 | Gemini serveris | A | `POST /api/ai` |
 | Diagnostika ir Vercel | A | Vėlesni etapai |
 
-`/explore` ir `/login` dabar turi tik informacinius puslapius, kad navigacija
-nevestų į klaidas. A pakeis jų turinį; paieškos ir autentifikacijos logikos nėra.
+`/explore` A 2 etape prijungtas prie tikros muziejaus paieškos: raktažodis,
+autoriaus filtras, puslapiavimas, kortelės ir nuorodos į B detales.
+`GET /api/artworks` ir puslapis naudoja `searchArtworks` iš `src/lib/artic.ts`;
+esamos B detalių ir vaizdų funkcijos nekeistos. Rezultatai ir ribos:
+`docs/phase-2-a-report.md`.
+`/login` vis dar informacinis puslapis; autentifikacijos logikos nėra.
 Nekurti pakartotinio Next.js pagrindo kitame kataloge.
 
 ## Bendri failai

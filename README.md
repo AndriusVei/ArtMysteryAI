@@ -12,7 +12,11 @@ Kūrinio puslapyje pridėta „Meno detektyvo“ parametrų forma ir vietinis ty
 pavyzdys. Gemini neprijungtas, mokamų užklausų nėra. Mygtukas „Išsaugoti pavyzdį“
 išsaugo rezultatą šioje naršyklėje; `/investigations` leidžia peržiūrėti visą tyrimą,
 filtruoti ir pašalinti su patvirtinimu. Tai demonstraciniai, ne paskyros duomenys.
-Paiešką, tikros paskyros saugojimą, autentifikaciją ir Gemini serverį prijungs A.
+A paieška veikia `/explore`: raktažodis, autoriaus filtras, abu kriterijai kartu,
+rezultatų kortelės ir puslapiavimas. Paspaudus pavadinimą atveriamos esamos B
+detalės. Kriterijai saugomi URL; rodomi originalo kalbos metaduomenys ir
+viešo naudojimo kūriniai su vaizdo identifikatoriumi.
+Tikros paskyros saugojimą, autentifikaciją ir Gemini serverį A prijungs vėliau.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
@@ -25,10 +29,12 @@ Kolekcija: [3 etapo B ataskaita](docs/phase-3-b-report.md) ir
 DI parametrų sąsaja: [B integracijos sutartis](docs/developer-b-investigation.md).
 Išsaugoti tyrimai: [B saugojimo sutartis](docs/developer-b-saved-investigations.md).
 Dizaino ir prieinamumo patikra: [6 etapo B ataskaita](docs/phase-6-b-report.md).
+A paieška ir tikros integracijos rezultatai: [2 etapo A ataskaita](docs/phase-2-a-report.md).
 
 ## Paleidimas Windows aplinkoje
 
-Reikalinga Node.js 26 LTS (26.13.0 arba naujesnė 26.x versija) ir npm 11.
+Reikalinga Node.js 26 LTS (26.13.0 arba naujesnė 26.x versija).
+B pagrindas tikrintas su npm 11; A etapai patikrinti su npm 12.2.2.
 Kitose sistemose vietoje `npm.cmd` naudokite `npm`.
 
 ```powershell
@@ -36,7 +42,7 @@ npm.cmd ci
 npm.cmd run dev
 ```
 
-Atverkite http://localhost:3000. Aplinkos kintamųjų 1 etapui nereikia.
+Atverkite http://localhost:3000/explore. 1 ir 2 etapams API raktų nereikia.
 Jeigu npm praneša `UNABLE_TO_VERIFY_LEAF_SIGNATURE`, šiame kompiuteryje padėjo
 `$env:NODE_OPTIONS = '--use-system-ca'` (tik dabartinei terminalo sesijai).
 Neišjunkite TLS sertifikatų tikrinimo.
@@ -56,6 +62,16 @@ Patikrinkite pradinį puslapį, visas keturias navigacijos nuorodas ir
 1440 px pločius, Tab navigaciją bei nuorodą „Pereiti prie turinio“.
 `npm test` tikrina muziejaus atsakymų validavimą ir klaidų atvejus be tinklo užklausų.
 Tai nėra naršyklės ar visos programos funkcinių testų rinkinys.
+
+Kai serveris veikia vietoje, paieškos patikrą galima paleisti atskirame terminale:
+
+```powershell
+node scripts/check-search-browser.mjs http://127.0.0.1:3000
+```
+
+Ji naudoja tikrą nemokamą muziejaus API ir įdiegtą Edge atskirame laikiname
+profilyje. Neleisti produkciniame URL; scenarijus tik vietinis. Internetas
+būtinas. Automatinio mokamų paslaugų naudojimo nėra.
 
 Detalių integracija A kolegai: [B detalių sutartis](docs/developer-b-artwork-details.md).
 
