@@ -2,12 +2,18 @@
 
 ## Dabartinė būsena
 
-1 etapas: vietinis Next.js App Router, TypeScript ir Tailwind pagrindas.
-Pradinis puslapis ir navigacija veikia; kiti skyriai paaiškina, kad funkcijos dar kuriamos.
-Muziejaus API, kolekcijos saugojimas, autentifikacija ir DI šiame etape neprijungti.
+2 etapo B dalis: kūrinio detalės su tikra muziejaus API informacija.
+Atverkite `/artwork/16568`, pavyzdžiui, http://localhost:3000/artwork/16568.
+Vaizdą iš muziejaus IIIF gauna mūsų serveris ir naršyklei pateikia per
+`/api/artworks/[id]/image`; jam nepasiekiamam rodomas paaiškinimas ir pakartojimo mygtukas.
+Paiešką prijungs A. Kolekcijos saugojimas, autentifikacija ir DI dar neprijungti.
+Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
+„Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
+vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
 Nėra mokamų užklausų, raktų ar automatinių publikavimo veiksmų.
 
 Faktiškai atliktos patikros ir apribojimai: [1 etapo ataskaita](docs/phase-1-report.md).
+Naujausi B detalių rezultatai: [2 etapo ataskaita](docs/phase-2-report.md).
 
 ## Paleidimas Windows aplinkoje
 
@@ -29,6 +35,7 @@ Neišjunkite TLS sertifikatų tikrinimo.
 ```powershell
 npm.cmd run lint
 npm.cmd run typecheck
+npm.cmd test
 npm.cmd run build
 npm.cmd run start
 ```
@@ -36,7 +43,10 @@ npm.cmd run start
 Patikrinkite pradinį puslapį, visas keturias navigacijos nuorodas ir
 `/neegzistuojantis-puslapis` (lietuviškas 404). Naršyklėje patikrinkite 375 px ir
 1440 px pločius, Tab navigaciją bei nuorodą „Pereiti prie turinio“.
-Automatinių funkcinių testų šiame etape nėra; šios komandos jų neatstoja.
+`npm test` tikrina muziejaus atsakymų validavimą ir klaidų atvejus be tinklo užklausų.
+Tai nėra naršyklės ar visos programos funkcinių testų rinkinys.
+
+Detalių integracija A kolegai: [B detalių sutartis](docs/developer-b-artwork-details.md).
 
 ## Darbas su kolega A
 

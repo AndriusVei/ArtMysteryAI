@@ -14,7 +14,7 @@ jo ir Next.js papildinių atnaujinimą kartu, prieš galutinį projekto vertinim
 | Sritis | Atsakingas | Adresas / failas |
 | --- | --- | --- |
 | Paieška | A | `/explore`, `src/app/explore/page.tsx` |
-| Detalės ir vaizdai | B | `/artwork/[id]` (kuriama 2 etape) |
+| Detalės ir vaizdai | B | `/artwork/[id]`, `GET /api/artworks/[id]` |
 | Kolekcija, kategorijos, pastabos | B | `/collection` |
 | DI parametrų sąsaja | B | Kūrinio detalių puslapyje |
 | Išsaugotų tyrimų sąsaja | B | `/investigations` |
@@ -41,6 +41,11 @@ TypeScript sąsajos bus kuriamos kartu su jas naudojančiomis funkcijomis:
 Muziejaus `artwork_id` yra skaičius; paieškos rezultato `id` turi tapti
 `/artwork/[id]` įvestimi. API atsakymai tikrinami vykdymo metu, ne vien TypeScript.
 Detalių duomenų gavimą sutelkti `src/lib/artic.ts`, nedubliuoti kiekviename puslapyje.
+
+2 etapo B detalės paruoštos. `Artwork` ir `ArtworkResult` tipai yra
+`src/types/artwork.ts`; muziejaus duomenys tikrinami `src/lib/artic.ts`.
+Paieškos kortelė turi naudoti `<Link href={\`/artwork/${result.id}\`}>`.
+API atsakymų ir bandymų sutartis: `docs/developer-b-artwork-details.md`.
 
 Supabase adapterį ir serveriu patikrintą naudotojo tapatybę prijungs A.
 B demonstraciniai adapteriai bus atskirti nuo tikro saugojimo ir aiškiai pažymėti UI;
