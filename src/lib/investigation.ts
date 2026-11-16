@@ -1,5 +1,6 @@
 import type { Artwork } from "@/types/artwork";
 import type { InvestigationRequest, InvestigationResponse, InvestigationService, ResearchSettings, KnowledgeLevel } from "@/types/investigation";
+import type { InvestigationRepository, SavedInvestigation } from "@/types/investigation";
 
 export const MAX_USER_PROMPT_LENGTH = 1000;
 export const defaultResearchSettings: ResearchSettings = {
@@ -143,6 +144,77 @@ export function createDemoInvestigationService(artwork: Artwork): InvestigationS
         },
       };
       return validateInvestigationResponse(response, request);
+    },
+  };
+}
+
+export const DEMO_INVESTIGATIONS_KEY = "artmystery:demo:investigations:v1";
+export const MAX_SAVED_INVESTIGATIONS = 30;
+const MAX_SAVED_LENGTH = 2000000;
+export class InvestigationStorageError extends Error {}
+export function investigationStorageMessage(error: unknown): string {
+  return error instanceof InvestigationStorageError ? error.message : "Naršyklės saugykla nepasiekiama. Pakeitimai neišsaugoti.";
+}
+function storageFailure(): never {
+  throw new InvestigationStorageError("Tyrimų duomenų nepavyko perskaityti. Esami duomenys neperrašyti.");
+}
+function isoDate(value: unknown): value is string {
+  return typeof value === "string" && value.length === 24 && Number.isFinite(Date.parse(value)) && new Date(value).toISOString() === value;
+}
+export function decodeDemoInvestigations(raw: string | null): SavedInvestigation[] {
+  if (raw === null) return [];
+  try {
+    if (raw.length > MAX_SAVED_LENGTH) return storageFailure();
+    const data: unknown = JSON.parse(raw);
+    if (!record(data) || data.version !== 1 || !Array.isArray(data.items) || data.items.length > MAX_SAVED_INVESTIGATIONS) return storageFailure();
+    const ids = new Set<string>();
+    return data.items.map((item: unknown) => {
+      if (!record(item) || typeof item.id !== "string" || !/^demo-[0-9a-f-]{36}$/.test(item.id) || ids.has(item.id)
+        || !text(item.artworkTitle, 2000) || !isoDate(item.savedAt) || !record(item.response)) return storageFailure();
+      const request = validateInvestigationRequest(item.response.request);
+      const response = validateInvestigationResponse(item.response, request);
+      if (response.mode !== "demo") return storageFailure();
+      ids.add(item.id);
+      return { id: item.id, artworkTitle: item.artworkTitle, savedAt: item.savedAt, response };
+    });
+  } catch { return storageFailure(); }
+}
+
+interface InvestigationStorage { getItem(key: string): string | null; setItem(key: string, value: string): void }
+/** Tik vietiniai demo duomenys. Jokio automatinio perkėlimo į Supabase. */
+export function createDemoInvestigationRepository(storage: () => InvestigationStorage, onChange: () => void = () => {}): InvestigationRepository {
+  const read = () => {
+    let raw: string | null;
+    try { raw = storage().getItem(DEMO_INVESTIGATIONS_KEY); }
+    catch { throw new InvestigationStorageError("Naršyklės saugykla nepasiekiama. Pakeitimai neišsaugoti."); }
+    return decodeDemoInvestigations(raw);
+  };
+  const write = (items: SavedInvestigation[]) => {
+    const raw = JSON.stringify({ version: 1, items });
+    if (raw.length > MAX_SAVED_LENGTH) throw new InvestigationStorageError("Tyrimai netelpa demonstracinėje saugykloje. Pakeitimai neišsaugoti.");
+    try { storage().setItem(DEMO_INVESTIGATIONS_KEY, raw); }
+    catch { throw new InvestigationStorageError("Nepavyko įrašyti tyrimų. Patikrink naršyklės saugyklos prieinamumą ir laisvą vietą. Pakeitimai neišsaugoti."); }
+    onChange();
+  };
+  return {
+    mode: "demo",
+    async list() { return read(); },
+    async save(input, artworkTitle) {
+      const response = validateInvestigationResponse(input, input.request);
+      if (response.mode !== "demo" || !text(artworkTitle, 2000)) throw new InvestigationStorageError("Ši saugykla priima tik demonstracinius tyrimus su kūrinio pavadinimu.");
+      const items = read();
+      // Pakartotinis to paties rezultato paspaudimas nekuria antro įrašo.
+      const existing = items.find((item) => JSON.stringify(item.response) === JSON.stringify(response));
+      if (existing) return existing;
+      if (items.length >= MAX_SAVED_INVESTIGATIONS) throw new InvestigationStorageError("Galima išsaugoti iki 30 demonstracinių tyrimų. Pirmiausia pašalink nereikalingą tyrimą.");
+      const item: SavedInvestigation = { id: `demo-${crypto.randomUUID()}`, artworkTitle: artworkTitle.trim(), savedAt: new Date().toISOString(), response };
+      write([item, ...items]);
+      return item;
+    },
+    async remove(id) {
+      const items = read();
+      if (!items.some((item) => item.id === id)) throw new InvestigationStorageError("Šio tyrimo jau nebėra. Atnaujink sąrašą.");
+      write(items.filter((item) => item.id !== id));
     },
   };
 }

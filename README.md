@@ -9,7 +9,9 @@ Vaizdą iš muziejaus IIIF gauna mūsų serveris ir naršyklei pateikia per
 `/collection` veikia demonstraciniu režimu: išsaugojimas šioje naršyklėje,
 kategorijos, pastabos, filtrai ir pašalinimas su patvirtinimu.
 Kūrinio puslapyje pridėta „Meno detektyvo“ parametrų forma ir vietinis tyrimo
-pavyzdys. Gemini neprijungtas, mokamų užklausų nėra. Pavyzdžiai dar neišsaugomi.
+pavyzdys. Gemini neprijungtas, mokamų užklausų nėra. Mygtukas „Išsaugoti pavyzdį“
+išsaugo rezultatą šioje naršyklėje; `/investigations` leidžia peržiūrėti visą tyrimą,
+filtruoti ir pašalinti su patvirtinimu. Tai demonstraciniai, ne paskyros duomenys.
 Paiešką, tikros paskyros saugojimą, autentifikaciją ir Gemini serverį prijungs A.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
@@ -21,6 +23,7 @@ Naujausi B detalių rezultatai: [2 etapo ataskaita](docs/phase-2-report.md).
 Kolekcija: [3 etapo B ataskaita](docs/phase-3-b-report.md) ir
 [integracijos sutartis](docs/developer-b-collection.md).
 DI parametrų sąsaja: [B integracijos sutartis](docs/developer-b-investigation.md).
+Išsaugoti tyrimai: [B saugojimo sutartis](docs/developer-b-saved-investigations.md).
 
 ## Paleidimas Windows aplinkoje
 

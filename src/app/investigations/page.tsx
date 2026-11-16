@@ -1,5 +1,5 @@
-import { FeatureIntroduction } from "@/components/feature-introduction";
+import { SavedInvestigationsView } from "@/components/investigation/saved-investigations-view";
 
 export default function InvestigationsPage() {
-  return <FeatureIntroduction title="Mano AI tyrimai" description="Čia bus galima peržiūrėti išsaugotus meno detektyvo tyrimus ir jų parametrus." />;
+  return <SavedInvestigationsView />;
 }

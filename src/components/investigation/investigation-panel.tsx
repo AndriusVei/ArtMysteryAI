@@ -1,5 +1,7 @@
 "use client";
 
+import { InvestigationResultView } from "./investigation-result-view";
+import { SaveInvestigationButton } from "./save-investigation-button";
 import { useEffect, useRef, useState } from "react";
 import type { Artwork } from "@/types/artwork";
 import type { InvestigationRequest, InvestigationResponse, ResearchSettings } from "@/types/investigation";
@@ -56,7 +58,7 @@ export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
       <p className="mt-5 max-w-2xl leading-8 text-muted">Pasirink savo žinių lygį, tyrimo būdą ir klausimų skaičių. Kūrinio informacija susiejama automatiškai.</p>
       <aside aria-label="Tyrimo demonstracinis režimas" className="mt-7 border-l-2 border-gold bg-white/50 p-5 text-sm leading-7">
         <p className="font-semibold">Demonstracinis režimas · Gemini neprijungtas</p>
-        <p className="text-muted">Rodomas vietinis mokomasis pavyzdys, ne DI sugeneruotas tyrimas. Mokamų užklausų nėra. Šis pavyzdys neišsaugomas ir atnaujinus puslapį dings.</p>
+        <p className="text-muted">Rodomas vietinis mokomasis pavyzdys, ne DI sugeneruotas tyrimas. Mokamų užklausų nėra. Pavyzdį gali išsaugoti tik šioje naršyklėje. Neišsaugotas pavyzdys atnaujinus puslapį dings. Nerašyk slaptažodžių ar kitų jautrių duomenų.</p>
       </aside>
 
       <form onSubmit={submit} className="mt-8" aria-busy={pending}>
@@ -108,34 +110,10 @@ export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
         {error && <p role="alert" className="mt-5 text-sm leading-7">{error}</p>}
       </form>
 
-      {response && <section aria-labelledby="research-result-heading" className="mt-10 border border-line bg-white/40 p-5 sm:p-8">
-        <p className="eyebrow">Demonstracinis tyrimo pavyzdys</p>
-        <h3 id="research-result-heading" ref={resultHeading} tabIndex={-1} className="mt-4 break-words text-2xl sm:text-3xl">{response.result.title}</h3>
-        <p className="mt-4 text-sm leading-7 text-muted">{knowledgeLevels[response.request.knowledgeLevel]} · {investigationModes[response.request.investigationMode]} · {response.request.questionCount} klausimai · kūrinys #{response.request.artworkId}</p>
-        <p className="mt-5 leading-8">{response.result.introduction}</p>
-        {response.request.userPrompt && <div className="mt-6 border-l-2 border-line pl-4">
-          <h4 className="text-sm font-semibold">Tavo papildomas prašymas</h4>
-          <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{response.request.userPrompt}</p>
-          <p className="mt-2 text-xs text-muted">Šabloniniame pavyzdyje šis prašymas neapdorojamas.</p>
-        </div>}
-        <h4 className="mt-8 text-lg font-semibold">Muziejaus pateikti duomenys</h4>
-        <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7">
-          {response.result.historicalContext.map((entry, index) => <li key={index}><span className="break-words">{entry.text}</span>{" "}<a href={entry.sourceUrl} className="underline underline-offset-4">Šaltinis</a></li>)}
-        </ul>
-        <h4 className="mt-8 text-lg font-semibold">Tyrimo ribos ir interpretacijos</h4>
-        {response.result.observations.map((observation, index) => <p key={index} className="mt-3 text-sm leading-7 text-muted">{observation}</p>)}
-        <h4 className="mt-8 text-lg font-semibold">Klausimai tavo tyrimui</h4>
-        <ol className="mt-5 space-y-6" aria-label="Tyrimo klausimai">
-          {response.result.questions.map((entry, index) => <li key={index} className="border-t border-line pt-5">
-            <p className="font-semibold leading-7">{index + 1}. {entry.question}</p>
-            <details className="mt-3 text-sm leading-7">
-              <summary className="min-h-11 cursor-pointer py-2 text-gold">Galimas atsakymas ir paaiškinimas</summary>
-              <p className="mt-3 whitespace-pre-wrap break-words">{entry.suggestedAnswer}</p>
-            </details>
-          </li>)}
-        </ol>
-        <p className="mt-8 border-t border-line pt-6 text-sm leading-7 text-muted">{response.result.summary}</p>
-      </section>}
+      {response && <>
+        <InvestigationResultView response={response} headingId="research-result-heading" headingRef={resultHeading} />
+        <SaveInvestigationButton key={JSON.stringify(response)} response={response} artworkTitle={artwork.title} />
+      </>}
     </section>
   );
 }

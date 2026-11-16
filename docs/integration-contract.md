@@ -58,6 +58,10 @@ DI rezultatų schemą ir klaidų formatą A ir B suderins prieš integraciją.
 Paruošta B parametrų forma ir demo adapteris. Sutartys:
 `src/types/investigation.ts`, tikrinimas ir vietinis šablonas `src/lib/investigation.ts`.
 Integracijos detalės: `docs/developer-b-investigation.md`. A `/api/ai` B nekūrė.
+Išsaugotų tyrimų sąsaja ir demo saugykla paruošta: `SavedInvestigation` ir
+`InvestigationRepository` yra `src/types/investigation.ts`. Perdavimas A:
+`docs/developer-b-saved-investigations.md`. `account` adapteris atskiras;
+demo rezultatai į paskyrą automatiškai nekeliami.
 
 ## Nemokamas režimas
 
