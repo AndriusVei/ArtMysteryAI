@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { configuredSiteOrigin } from "@/lib/supabase/config";
-import { authErrorMessage, safeAuthNext, validateCredentials, type AuthFormState } from "@/lib/auth-validation";
+import { authErrorMessage, safeAuthNext, validateCredentials, validateEmail, type AuthFormState } from "@/lib/auth-validation";
 
 function credentials(form: FormData, registering = false) {
   if (form.getAll("email").length !== 1 || form.getAll("password").length !== 1) return null;
@@ -44,4 +44,16 @@ export async function logout(): Promise<AuthFormState> {
   try { const { error } = await client.auth.signOut({ scope: "local" }); if (error) return { error: "Atsijungti nepavyko. Pabandyk dar kartą." }; }
   catch { return { error: "Atsijungti nepavyko. Pabandyk dar kartą." }; }
   revalidatePath("/", "layout"); redirect("/login");
+}
+
+export async function resendConfirmation(_state: AuthFormState, form: FormData): Promise<AuthFormState> {
+  const email = form.getAll("email").length === 1 ? validateEmail(form.get("email")) : null;
+  if (!email) return { error: "Įrašyk tinkamą el. pašto adresą." };
+  const client = await createSupabaseServer(), origin = configuredSiteOrigin();
+  if (!client || !origin) return { error: "Paskyrų paslauga dar neprijungta." };
+  try {
+    const { error } = await client.auth.resend({ type: "signup", email, options: { emailRedirectTo: `${origin}/auth/confirm` } });
+    if (error) return { error: authErrorMessage(error.code, error.status) };
+    return { message: "Patvirtinimo laiško užklausa priimta. Jei paskyrą reikia patvirtinti, patikrink el. paštą ir naudok naujausią nuorodą šioje naršyklėje." };
+  } catch { return { error: authErrorMessage() }; }
 }

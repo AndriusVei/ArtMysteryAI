@@ -32,9 +32,9 @@ esamos B detalių ir vaizdų funkcijos nekeistos. Rezultatai ir ribos:
 3 etape paruošti `/login`, `/register`, `/profile`, Supabase SSR slapukai,
 serverio sesijos patikra ir paskyros kolekcijos API. Supabase konfigūracija
 prijungta, patvirtinta migracija pritaikyta; RLS politikos ir anoniminės prieigos
-draudimas patikrinti. Tikros sesijos ir dviejų prisijungusių naudotojų izoliacija
-dar nepatvirtinti. Žr. `docs/supabase-setup.md` ir
-`docs/phase-3-a-report.md`. Tai nėra užbaigto 3 etapo priėmimo žyma.
+draudimas patikrinti. Tikros sesijos, paskyros CRUD ir dviejų prisijungusių
+naudotojų izoliacija patvirtinti; 3 etapas užbaigtas. Žr. `docs/supabase-setup.md`,
+`docs/phase-3-a-report.md` ir `docs/phase-3-acceptance.md`.
 Nekurti pakartotinio Next.js pagrindo kitame kataloge.
 
 ## Bendri failai
@@ -62,7 +62,7 @@ API atsakymų ir bandymų sutartis: `docs/developer-b-artwork-details.md`.
 `CollectionRepository`. B komponentai naudoja `useCollection`, o originalus
 `useDemoCollection` paliktas demo provider viduje. Rodinio tekstai priklauso
 nuo adapterio režimo. Serverio `/api/collection` tikrina naudotoją ir nuosavybę;
-tikrų duomenų integracija dar laukia Supabase konfigūracijos bei RLS bandymų.
+tikrų duomenų integracija prijungta ir išbandyta dviem izoliuotais naudotojais.
 B demonstraciniai adapteriai atskirti nuo tikro saugojimo ir aiškiai pažymėti UI;
 localStorage duomenys nėra paskyros duomenys. Nekurti fiktyvios autentifikacijos.
 Kolekcijos demo adapteris jau paruoštas: `src/lib/demo-collection.ts` ir
@@ -82,15 +82,17 @@ demo rezultatai į paskyrą automatiškai nekeliami.
 
 Muziejaus vieša API naudojama su talpinimu podėlyje ir ribotomis užklausomis.
 Paveikslai tik su patikrintu `image_id` ir teisių informacija.
-Supabase ir Gemini pradžioje demonstraciniai: nėra tikrų užklausų ar sąnaudų.
-Prieš tikrą integraciją patikrinti tuo metu galiojančias nemokamas kvotas;
+Supabase Auth ir paskyros kolekcija jau naudoja tikrą projektą; patikrinta realiais
+naudotojais. Gemini ir AI tyrimų rezultatai tebėra demonstraciniai.
+Naudojant paslaugas tikrinti tuo metu galiojančias nemokamas kvotas;
 viršijus limitą rodyti klaidą, automatiškai nepereiti į mokamą paslaugą.
 
 ## Perdavimas ir patikros
 
 Prieš jungimą A turi peržiūrėti pagrindą, patvirtinti Node versiją ir adresus,
 paleisti README nurodytas patikras bei palyginti savo turimą vietinį kodą.
-Pull Request patikrų aprašas yra `.github/workflows/checks.yml`. GitHub jis dar
-nepaleistas. A turi patikrinti Actions prieinamumą ir nemokamą kvotą prieš PR;
-nemokamai kvotai pasibaigus mokamų vykdymų nejungti. Dviejų tikrų vartotojų RLS testai, Gemini klaidos ir
-galutinis 100 bandymų vertinimas neatlikti ir nepriklauso 1 etapui.
+Pull Request patikrų aprašas yra `.github/workflows/checks.yml`. Dabartinių GitHub
+Actions vykdymų būklė šiame etape netikrinta. A turi patikrinti Actions prieinamumą
+ir nemokamą kvotą prieš PR; nemokamai kvotai pasibaigus mokamų vykdymų nejungti.
+Dviejų tikrų naudotojų RLS testai atlikti 3 etape. Gemini klaidos ir galutinis
+100 reprezentatyvių bandymų vertinimas lieka vėlesniems etapams.

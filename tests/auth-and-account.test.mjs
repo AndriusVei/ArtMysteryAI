@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { validateCredentials, safeAuthNext, authErrorMessage } from "../src/lib/auth-validation.ts";
+import { validateCredentials, validateEmail, safeAuthNext, authErrorMessage } from "../src/lib/auth-validation.ts";
 import { supabaseConfiguration, configuredSiteOrigin } from "../src/lib/supabase/config.ts";
 import { AccountCollectionError, parseAccountCollectionItem, validateCollectionMutation, readCollectionBody, requireSameOrigin } from "../src/lib/account-collection.ts";
 import { createAccountCollectionRepository } from "../src/lib/account-collection-repository.ts";
@@ -9,6 +9,8 @@ const item = { id: "11111111-1111-4111-8111-111111111111", artworkId: 16568, tit
   category: "favorites", notes: "", createdAt: "2026-11-16T12:00:00.000000+00:00", updatedAt: "2026-11-16T12:00:00.000001+00:00" };
 
 test("el. paštas normalizuojamas, slaptažodžio tarpai nekeičiami", () => {
+  assert.equal(validateEmail(" A@Example.com "), "a@example.com");
+  for (const value of [null, ["a@b.c"], "bad", "x".repeat(250) + "@example.com"]) assert.equal(validateEmail(value), null);
   assert.deepEqual(validateCredentials(" A@Example.com ", " secret "), { email: "a@example.com", password: " secret " });
   assert.ok(validateCredentials("a@example.com", "x".repeat(12), true));
   for (const [email, password, register] of [["bad", "secret"], [[], "secret"], ["a@b.c", ""], ["a@b.c", "x".repeat(129)], ["a@b.c", "short", true]]) assert.equal(validateCredentials(email, password, register), null);

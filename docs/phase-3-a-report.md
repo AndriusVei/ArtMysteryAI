@@ -1,4 +1,9 @@
-# Kūrėjas A: 3 etapo vietinė dalis
+# Kūrėjas A: 3 etapas – autentifikacija, kolekcija ir RLS
+
+**3 etapas užbaigtas.** Baigiamųjų tikrų bandymų įrodymai ir ribos:
+[priėmimo ataskaita](phase-3-acceptance.md). 98 vienetiniai testai, 11 tikrų
+RLS scenarijų, 19 Auth/UI scenarijų ir 8 tikro laiško/PKCE scenarijai praėjo.
+Git commit, push, merge ir deploy agentas neatliko; 4 etapas nepradėtas.
 
 Atnaujinimas po naudotojo prisijungimo per terminalą (2026-11-16): Supabase CLI
 prieiga patvirtinta, projektas „ArtMysteryAI“ rastas ir susietas su šiuo katalogu.
@@ -11,18 +16,19 @@ Visose 3 lentelėse RLS įjungta, yra 12 politikų. Anoniminės CRUD teisės at�
 3 tikros anoniminės SELECT užklausos atmestos HTTP 401 / PostgreSQL 42501.
 Galutinis dry-run rodo `upToDate=true`. Keturios vietinės programos patikros
 (API 401, profilio nukreipimas, aktyvios login/register formos) praėjo.
-Testinės paskyros dar nekurtos; tikri login/CRUD/dviejų naudotojų RLS scenarijai
-neatlikti. Ankstesnės vietinio kodo patikros aprašytos toliau.
+Vėliau naudotojui paprašius užbaigti etapą, sukurtos dvi izoliuotos testinės
+tapatybės, atlikti tikri login/CRUD/dviejų naudotojų RLS bandymai ir pašalintos tik
+šios testinės paskyros. Naudotojo pateiktu adresu atlikta registracija ir laiško
+patvirtinimas. PKCE, HttpOnly sesijos, refresh, logout, klaidingas ir teisingas
+slaptažodis patikrinti. Patvirtinta naudotojo paskyra palikta jam.
 
 Data: 2026-11-16. Patvirtinimas: „PATVIRTINU 3 ETAPĄ“.
 Pradinis commit: `75f5ef87eb4c648e8a49ebb5979f53d5d86222fa`.
 Vietinė šaka: `feature/a-auth-collection`.
 Aplinka: Windows, PowerShell, Node.js 26.13.0, npm 12.2.2, Next.js 16.4.6, Edge.
 
-**3 etapo priėmimas dar neužbaigtas.** Supabase projektas jau prijungtas,
-migracija pritaikyta. Lokalus kodas ir testai paruošti; tikros
-registracijos, el. pašto, sesijų, bazės saugojimo ir dviejų naudotojų RLS
-patikros neatliktos. 4 etapas nepradedamas.
+Supabase projektas prijungtas, migracija pritaikyta. Tikros registracijos,
+el. pašto, sesijų, bazės saugojimo ir dviejų naudotojų RLS patikros atliktos.
 
 ## Kas padaryta
 
@@ -64,7 +70,7 @@ patikros neatliktos. 4 etapas nepradedamas.
 | Švarus `npm ci` su dabartiniais manifestais atskirame OS temp kataloge | PASS | Projekto node_modules nedubliavo ir netrynė |
 | `npm.cmd run lint` | PASS | Po nepanaudotų parametrų pašalinimo |
 | `npm.cmd run typecheck` | PASS | Next maršrutų tipai ir tsc |
-| `npm.cmd test` | **94 PASS, 0 FAIL** | 81 ankstesnis ir 13 naujų; išorinių paslaugų nėra |
+| `npm.cmd test` | **98 PASS, 0 FAIL** | 81 ankstesnis, 13 auth/kolekcijos ir 4 PKCE patvirtinimo; išorinių paslaugų nėra |
 | `npm.cmd run build` | PASS | Be Supabase konfigūracijos |
 | Nesukonfigūruotos autentifikacijos HTTP patikra | **9 PASS, 0 FAIL** | Žemiau aprašytas vietinis scenarijus |
 | Pagrindo HTTP ir Edge regresija | **20 PASS, 0 FAIL** | 375/1440 px, navigacija ir klaviatūra |
@@ -74,8 +80,8 @@ patikros neatliktos. 4 etapas nepradedamas.
 | Supabase migracija ir reali SQL vykdymo patikra | **PASS** | Pritaikyta patvirtinta migracija, 3 lentelės, 12 politikų, teisių patikra |
 | Anoniminės SELECT užklausos per REST | **3 PASS, 0 FAIL** | Visos 3 lentelės grąžino 401 / 42501 |
 | Programos prieiga be sesijos po prijungimo | **4 PASS, 0 FAIL** | Kolekcijos API 401, profilio 307, aktyvios abi paskyros formos |
-| Tikra registracija, laiškas, login/logout, sesija po refresh | **NOT TESTED** | Reikia patvirtintų testinių paskyrų |
-| Dviejų tikrų naudotojų RLS ir CRUD | **NOT TESTED** | Paruoštas scenarijus; nepaleistas |
+| Tikra registracija, laiškas, login/logout, sesija po refresh | **PASS** | Galutinis tikro laiško/PKCE scenarijus 8 PASS, 0 FAIL |
+| Dviejų tikrų naudotojų RLS ir CRUD | **PASS** | 11 RLS ir 19 Auth/UI scenarijų; tik izoliuoti testai |
 
 HTTP scenarijus patikrino: login/register formos rodomos aiškiai išjungtos be
 konfigūracijos; `/profile` nukreipia į login; netinkamas patvirtinimas nukreipia
@@ -126,14 +132,15 @@ Tada atskirame terminale:
 node --use-system-ca node_modules/next/dist/bin/next start --hostname 127.0.0.1 --port 3189
 ```
 
-Kitame terminale (kol Supabase dar neprijungtas):
+Kitame terminale pagrindo ir B demo regresijai:
 
 ```powershell
-node scripts/check-auth-unconfigured.mjs http://127.0.0.1:3189
 node scripts/check-foundation-browser.mjs http://127.0.0.1:3189
 node scripts/check-b-accessibility-browser.mjs http://127.0.0.1:3189
 ```
 
+`check-auth-unconfigured.mjs` skirtas tik atskirai aplinkai be Supabase reikšmių;
+prijungtame projekte jo išjungtų formų / 503 lūkesčiai netinka.
 Realus RLS scenarijus į šias komandas neįtrauktas. Jis rašys ir šalins tik savo
 testinius įrašus; jam reikia atskiro leidimo, dviejų izoliuotų paskyrų ir aiškaus
 `ARTMYSTERY_ALLOW_REMOTE_TESTS=YES`. Žr. `docs/supabase-setup.md`.
@@ -150,9 +157,9 @@ pasirinktų failų staging – `git diff --cached --check` ir `git diff --cached
 Partneris šių pakeitimų dar nemato; paskelbus patvirtintą šaką jis turi pakartoti
 patikras ir abiejų naudotojų izoliaciją. B demo komponentų iš naujo nekurti.
 
-Visi 3 etapo kriterijai priimami tik sukūrus/prijungus Supabase, atskirai
-patvirtinus migraciją ir tikrus testinius įrašus bei įvykdžius setup dokumento
-funkcinį ir dviejų naudotojų scenarijų. Iki tol 4 etapo patvirtinimo neprašoma.
+3 etapo kriterijai patikrinti realiame Supabase projekte. Toliau tik gavus
+„PATVIRTINU 4 ETAPĄ“ galima pradėti Gemini backend ir tikrų AI tyrimų integraciją.
+Tai neleidžia automatiškai naudoti mokamų paslaugų ar vykdyti Git publikavimo.
 Prieš publikavimą lieka realūs saugumo bandymai, auth/collection užklausų
 piktnaudžiavimo ribojimas, CAPTCHA poreikio įvertinimas ir žinomos kūrimo
 įrankių audito grandinės atnaujinimas. Slaptažodžio atkūrimas šiame MVP etape

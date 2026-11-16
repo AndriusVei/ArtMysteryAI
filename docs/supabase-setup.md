@@ -1,11 +1,11 @@
-# Supabase prijungimas – 3 etapo likusi dalis
+# Supabase prijungimas ir pakartotinės patikros
 
 ## Patikrinta prijungimo būsena (2026-11-16)
 
 - Naudotojas prisijungė per vietinį Supabase CLI, ne per papildinį.
 - Rastas ir su šiuo katalogu susietas jo projektas „ArtMysteryAI“.
 - URL ir viešas publishable raktas automatiškai įrašyti į ignoruojamą `.env.local`.
-  Raktas terminalo ataskaitose nerodomas; secret/service_role nereikėjo.
+  Raktas terminalo ataskaitose nerodomas; programos konfigūracijai secret/service_role nereikia.
 - Viešas Auth nustatymų adresas grąžino HTTP 200: email registracija įjungta,
   naujų registracijų draudimas išjungtas, automatinis email patvirtinimas išjungtas
   (vartotojas turi patvirtinti laišką).
@@ -19,8 +19,15 @@
   užklausos grąžino HTTP 401 ir SQL kodą 42501.
 - Vietinė programa be sesijos grąžina 401 kolekcijos API, profilį nukreipia į
   login, o login/register formos aktyvios: 4 PASS, 0 FAIL.
-- Testinės paskyros ir jų duomenys dar nekuriami. Tikras login/logout,
-  laiško patvirtinimas ir dviejų prisijungusių naudotojų izoliacija dar nepatikrinti.
+- 3 etapas užbaigtas: tikras registracijos laiškas, numatytojo laiško PKCE,
+  login/logout, sesijos po refresh, kolekcijos CRUD ir dviejų prisijungusių
+  naudotojų izoliacija patikrinti. Žr. `docs/phase-3-acceptance.md`.
+- Dvi izoliuotos testinės paskyros ir jų duomenys pašalinti. Naudotojo pateiktu
+  adresu patvirtinta paskyra palikta jam. Sugeneruotas slaptažodis laikomas tik
+  ignoruojamame `.env.auth-verification.local`; jo nekelti į Git ar ataskaitas.
+- Pasibaigus nuorodos galiojimui galima naudoti lietuvišką pakartotinio laiško
+  formą login puslapyje. Ji nekeičia slaptažodžio ir nesuteikia sesijos savaime.
+- Laikinas bandymo callback 3191 pašalintas; liko `http://localhost:3000/auth/confirm`.
 
 Paruoštas vietinis kodas ir prijungtas projektas. Toliau pateikta bendra instrukcija nėra
 automatinis leidimas kurti debesijos išteklius ar vykdyti SQL. Prieš agentui tai
@@ -125,8 +132,17 @@ URL Configuration: Site URL `http://localhost:3000`; leidžiamas grįžimo adres
 `http://localhost:3000/auth/confirm`. Kitą adresą leisti tik jei jį tikrai naudoji.
 Nenaudoti laisvo `*` produkciniams grįžimo adresams.
 
-Authentication / Email Templates / Confirm signup laiško nuoroda turi naudoti
-token hash ir serverio endpointą, o ne vien numatytą kliento fragmentą:
+Šiame nemokamame projekte su numatytuoju laiškų tiekėju individualaus šablono
+keitimas buvo atmestas (`entitlement_required`). Mokamas planas ir SMTP nejungti.
+Naudojamas numatytasis Supabase laiškas su `ConfirmationURL`. Supabase SSR
+registracija naudoja PKCE; `/auth/confirm?code=...` serveris vykdo
+`exchangeCodeForSession`, naudodamas tos pačios naršyklės slapuką. Todėl laiško
+nuorodą reikia atverti toje pačioje naršyklėje ir tame pačiame svetainės adrese,
+kur registravaisi. Programos klaidos lietuviškos; tiekėjo laiškas lieka jo
+numatytos kalbos.
+
+Jei ateityje atskirai prijungiamas savo SMTP ir leidžiamas individualus šablonas,
+endpointas palaiko ir tokį `token_hash` variantą:
 
 ```html
 <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email">Patvirtinti el. paštą</a>
@@ -135,6 +151,7 @@ token hash ir serverio endpointą, o ne vien numatytą kliento fragmentą:
 Patikrinti realų laiškų pristatymą ir siuntimo ribas. Šis etapas neįgyvendina
 slaptažodžio atkūrimo; jo nereikia nurodyti kaip veikiančio.
 Dokumentacija: https://supabase.com/docs/guides/auth/passwords .
+PKCE: https://supabase.com/docs/guides/auth/sessions/pkce-flow .
 
 ## 5. Tikras funkcinis bandymas
 

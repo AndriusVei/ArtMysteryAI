@@ -6,8 +6,9 @@ B darbai: kūrinio detalės su tikra muziejaus API informacija ir demonstracinė
 Atverkite `/artwork/16568`, pavyzdžiui, http://localhost:3000/artwork/16568.
 Vaizdą iš muziejaus IIIF gauna mūsų serveris ir naršyklei pateikia per
 `/api/artworks/[id]/image`; jam nepasiekiamam rodomas paaiškinimas ir pakartojimo mygtukas.
-`/collection` veikia demonstraciniu režimu: išsaugojimas šioje naršyklėje,
-kategorijos, pastabos, filtrai ir pašalinimas su patvirtinimu.
+`/collection` prisijungus saugo į Supabase paskyrą; svečiui veikia atskira
+demonstracinė kolekcija šioje naršyklėje. Yra kategorijos, pastabos, filtrai ir
+pašalinimas su patvirtinimu. Demo įrašai automatiškai neperkeliami į paskyrą.
 Kūrinio puslapyje pridėta „Meno detektyvo“ parametrų forma ir vietinis tyrimo
 pavyzdys. Gemini neprijungtas, mokamų užklausų nėra. Mygtukas „Išsaugoti pavyzdį“
 išsaugo rezultatą šioje naršyklėje; `/investigations` leidžia peržiūrėti visą tyrimą,
@@ -16,11 +17,13 @@ A paieška veikia `/explore`: raktažodis, autoriaus filtras, abu kriterijai kar
 rezultatų kortelės ir puslapiavimas. Paspaudus pavadinimą atveriamos esamos B
 detalės. Kriterijai saugomi URL; rodomi originalo kalbos metaduomenys ir
 viešo naudojimo kūriniai su vaizdo identifikatoriumi.
-3 etapo vietinis autentifikacijos ir paskyros kolekcijos kodas paruoštas:
+3 etapo autentifikacija ir paskyros kolekcija prijungtos bei išbandytos:
 `/register`, `/login`, `/profile` ir atskiras Supabase saugojimo adapteris.
 Supabase projektas prijungtas, patvirtinta migracija pritaikyta: 3 lentelės,
 12 RLS politikų, anoniminė prieiga uždrausta ir patikrinta tiesiogiai.
-Tikros sesijos ir dviejų prisijungusių naudotojų izoliacija dar nepatikrinti.
+Tikras registracijos laiškas, PKCE sesija, login/logout, kolekcijos CRUD ir
+dviejų prisijungusių naudotojų izoliacija patikrinti. Įrodymai:
+[3 etapo priėmimas](docs/phase-3-acceptance.md).
 Be konfigūracijos išlieka demo režimas.
 Prijungimas: [Supabase instrukcija](docs/supabase-setup.md).
 Gemini ir tikrų AI tyrimų paskyros saugojimas priklauso 4 etapui.
@@ -37,7 +40,7 @@ DI parametrų sąsaja: [B integracijos sutartis](docs/developer-b-investigation.
 Išsaugoti tyrimai: [B saugojimo sutartis](docs/developer-b-saved-investigations.md).
 Dizaino ir prieinamumo patikra: [6 etapo B ataskaita](docs/phase-6-b-report.md).
 A paieška ir tikros integracijos rezultatai: [2 etapo A ataskaita](docs/phase-2-a-report.md).
-Autentifikacijos parengimas ir nepatikrinti kriterijai: [3 etapo A ataskaita](docs/phase-3-a-report.md).
+Autentifikacija, paskyros kolekcija ir priėmimo rezultatai: [3 etapo A ataskaita](docs/phase-3-a-report.md).
 
 ## Paleidimas Windows aplinkoje
 
