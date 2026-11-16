@@ -2,11 +2,13 @@
 
 ## Dabartinė būsena
 
-2 etapo B dalis: kūrinio detalės su tikra muziejaus API informacija.
+B darbai: kūrinio detalės su tikra muziejaus API informacija ir demonstracinė kolekcija.
 Atverkite `/artwork/16568`, pavyzdžiui, http://localhost:3000/artwork/16568.
 Vaizdą iš muziejaus IIIF gauna mūsų serveris ir naršyklei pateikia per
 `/api/artworks/[id]/image`; jam nepasiekiamam rodomas paaiškinimas ir pakartojimo mygtukas.
-Paiešką prijungs A. Kolekcijos saugojimas, autentifikacija ir DI dar neprijungti.
+`/collection` veikia demonstraciniu režimu: išsaugojimas šioje naršyklėje,
+kategorijos, pastabos, filtrai ir pašalinimas su patvirtinimu.
+Paiešką, tikros paskyros saugojimą ir autentifikaciją prijungs A. DI dar neprijungtas.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
@@ -14,6 +16,8 @@ Nėra mokamų užklausų, raktų ar automatinių publikavimo veiksmų.
 
 Faktiškai atliktos patikros ir apribojimai: [1 etapo ataskaita](docs/phase-1-report.md).
 Naujausi B detalių rezultatai: [2 etapo ataskaita](docs/phase-2-report.md).
+Kolekcija: [3 etapo B ataskaita](docs/phase-3-b-report.md) ir
+[integracijos sutartis](docs/developer-b-collection.md).
 
 ## Paleidimas Windows aplinkoje
 

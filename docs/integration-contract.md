@@ -50,6 +50,9 @@ API atsakymų ir bandymų sutartis: `docs/developer-b-artwork-details.md`.
 Supabase adapterį ir serveriu patikrintą naudotojo tapatybę prijungs A.
 B demonstraciniai adapteriai bus atskirti nuo tikro saugojimo ir aiškiai pažymėti UI;
 localStorage duomenys nėra paskyros duomenys. Nekurti fiktyvios autentifikacijos.
+Kolekcijos demo adapteris jau paruoštas: `src/lib/demo-collection.ts` ir
+`CollectionRepository` sutartis `src/types/collection.ts`. Detalės A integracijai
+ir apribojimai: `docs/developer-b-collection.md`. Demo įrašai automatiškai į paskyrą neperkeliami.
 Gemini adapteris naudos A serverio sąsają; joks raktas nekeliauja į naršyklę.
 DI rezultatų schemą ir klaidų formatą A ir B suderins prieš integraciją.
 

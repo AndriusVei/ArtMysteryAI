@@ -5,6 +5,7 @@ import { useState } from "react";
 import type { Artwork } from "@/types/artwork";
 import type { ArtworkTranslation } from "@/types/artwork-translation";
 import { ArtworkImage } from "./artwork-image";
+import { SaveArtworkButton } from "@/components/collection/save-artwork-button";
 
 export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; translation: ArtworkTranslation | null }) {
   const [language, setLanguage] = useState<"lt" | "en">(translation ? "lt" : "en");
@@ -64,6 +65,7 @@ export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; tra
               </div>
             ))}
           </dl>
+          <SaveArtworkButton artwork={{ artworkId: artwork.id, title: text.title, artist: artwork.artist, hasImage: Boolean(artwork.image) }} />
           <a href={artwork.museumUrl} target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex min-h-12 items-center gap-4 border border-ink px-5 py-3 text-sm hover:bg-ink hover:text-paper">
             Peržiūrėti muziejuje <span aria-hidden="true">↗</span><span className="sr-only"> (naujame skirtuke)</span>
           </a>

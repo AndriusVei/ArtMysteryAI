@@ -1,5 +1,7 @@
-import { FeatureIntroduction } from "@/components/feature-introduction";
+import { CollectionView } from "@/components/collection/collection-view";
+
+export const metadata = { title: "Mano kolekcija" };
 
 export default function CollectionPage() {
-  return <FeatureIntroduction title="Mano kolekcija" description="Čia bus tavo išsaugoti kūriniai, asmeninės kategorijos ir pastabos." />;
+  return <CollectionView />;
 }
