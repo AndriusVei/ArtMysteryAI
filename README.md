@@ -11,8 +11,9 @@ demonstracinė kolekcija šioje naršyklėje. Yra kategorijos, pastabos, filtrai
 pašalinimas su patvirtinimu. Demo įrašai automatiškai neperkeliami į paskyrą.
 Kūrinio puslapyje yra B „Meno detektyvo“ forma. 4 etape pridėtas Gemini serveris
 ir paskyros tyrimų adapteris. Nauja AI DB migracija atskirai patvirtinta ir
-pritaikyta; raktas prijungtas ir vienas atskirai patvirtintas tikras Gemini bandymas
-praėjo. Bendras generavimas išjungtas, kol nepatikrintas visas paskyros srautas.
+pritaikyta; raktas prijungtas ir tikras paskyros tyrimų srautas patikrintas su
+`gemini-3.5-flash-lite`. Bendras generavimas paliktas išjungtas pagal suteiktų
+ribotų bandymų leidimų apimtį; įjungimui reikia atskiro leidimo.
 Veikia aiškiai pažymėtas vietinis pavyzdys.
 Mygtukas „Išsaugoti pavyzdį“ saugo naršyklėje; `/investigations` leidžia peržiūrėti,
 filtruoti ir pašalinti. Demo įrašai į paskyrą automatiškai neperkeliami.
@@ -30,7 +31,10 @@ dviejų prisijungusių naudotojų izoliacija patikrinti. Įrodymai:
 Be konfigūracijos išlieka demo režimas.
 Prijungimas: [Supabase instrukcija](docs/supabase-setup.md).
 Gemini prijungimo eiga: [instrukcija](docs/gemini-setup.md).
-4 etapas dar nepriimtas; [vietinės patikros ir likę darbai](docs/phase-4-a-report.md).
+4 etapas užbaigtas; [patikros ir ribos](docs/phase-4-a-report.md).
+Tikras Supabase / UI srautas su imituotu modeliu praėjo 16 patikrų;
+atskirai patvirtintas tikras 5 klausimų generavimas su 3.5 Flash-Lite — 10 patikrų.
+[Baigiamosios patikros rezultatai](docs/phase-4-e2e-acceptance.md).
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.

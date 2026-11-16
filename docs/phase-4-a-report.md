@@ -1,12 +1,18 @@
 # 4 etapo A vietinės integracijos ataskaita
 
-2026-11-16. Šaka `feature/a-gemini`, pagrindas `62030fd`.
+2026-11-16–17. Šaka `feature/a-gemini`, pagrindas `62030fd`.
 Vartotojas patvirtino 4 etapą ir atskirai patvirtino AI debesijos migraciją.
 Migracija pritaikyta ir DB patikros praėjo; žr. `docs/phase-4-migration-acceptance.md`.
 Vartotojas vėliau įrašė Gemini raktą, nurodė Free planą ir atskirai patvirtino
 modelio pakeitimą bei vieną tikrą bandymą. Bandymas PASS; leidimas sunaudotas.
-Žr. `docs/phase-4-gemini-acceptance.md`. Papildomi tikri kvietimai nepatvirtinti.
-**Vietinis įgyvendinimas paruoštas, visas 4 etapas dar nepriimtas.**
+Pirmo bandymo rezultatai: `docs/phase-4-gemini-acceptance.md`.
+Atnaujinimas: vėliau atskirai patvirtinti du papildomi kvietimai jau panaudoti;
+abu bandymai nepavyko, antrajame patvirtintas Google HTTP 503. Tikras Supabase / UI
+srautas su imituotu modeliu: 16 PASS. Naujausia būsena ir įrodymai:
+`docs/phase-4-e2e-acceptance.md`. Po to vartotojas atskirai patvirtino
+`gemini-3.5-flash-lite` ir vieną papildomą kvietimą: tikras 5 klausimų srautas
+praėjo 10 patikrų. Visi suteikti kvietimų leidimai panaudoti.
+**4 etapo funkcinis priėmimas užbaigtas.**
 Commit, push, merge ir deploy agentas nevykdė. 5 etapas nepradėtas.
 
 ## Kas įgyvendinta
@@ -21,7 +27,7 @@ Commit, push, merge ir deploy agentas nevykdė. 5 etapas nepradėtas.
   Vien instrukcija negarantuoja modelio faktinio tikslumo — reikalinga tikro turinio peržiūra.
 - Muziejaus faktų bloką ir šaltinių URL sudaro serveris. Modeliui neleidžiama
   pakeisti šio bloko. Sugadinti / per dideli atsakymai neįrašomi ir nerodomi.
-- Naujos DB migracijos juodraštis: atominių naudotojo, IP bei bendrų kvotų funkcija,
+- Atskirai patvirtinta ir pritaikyta DB migracija: atominių naudotojo, IP bei bendrų kvotų funkcija,
   viena aktyvi užklausa naudotojui, 90 s užrakto galiojimas. Ne in-memory skaitikliai.
 - Užklausos ID apsaugo nuo jau sėkmingai įrašyto generavimo pakartojimo. Tas pats
   ID su kitu prašymu atmetamas. Klaidos automatiškai nekartojamos. Nesėkmė tarp
@@ -37,7 +43,8 @@ Commit, push, merge ir deploy agentas nevykdė. 5 etapas nepradėtas.
 - `AI_LIVE_ENABLED` ir `AI_STORAGE_ENABLED` atskirti. Be konfigūracijos rodoma
   aiški demonstracija. Live klaida tyliai nepakeičiama demo rezultatu.
   Privačiame `.env.local` pridėtos trūkstamos AI eilutės ir atsitiktinis HMAC raktas;
-  Vėliau vartotojas įrašė raktą; atskirai patvirtintas modelis `gemini-4-hydrogen`.
+  Vėliau vartotojas įrašė raktą; po atskirų patvirtinimų dabartinis modelis
+  `gemini-3.5-flash-lite`.
   Po patvirtintos migracijos paskyros saugykla įjungta vietoje;
   `AI_LIVE_ENABLED=false`. Esamos Supabase reikšmės neperrašytos.
 - Instrukcija `docs/gemini-setup.md` ir atskirai leidžiamas vienos tikros užklausos
@@ -47,7 +54,7 @@ Commit, push, merge ir deploy agentas nevykdė. 5 etapas nepradėtas.
 
 | Patikra | Rezultatas / tikroji apimtis |
 | --- | --- |
-| Vienetiniai testai | 114 PASS, iš jų 16 naujų DI testų; Gemini HTTP imituotas |
+| Vienetiniai testai | 115 PASS, iš jų 16 DI testų ir loopback Origin regresija; Gemini HTTP imituotas |
 | SDK importas ir imitacija | PASS; tikra SDK serializacija, atsakymo normalizavimas, 429 be retries ir tęsinio atsisakymas |
 | `lint`, `typecheck`, produkcinis `build` | PASS |
 | B tyrimo naršyklės scenarijai | 12 PASS; tikra Edge, aiški demo būsena, 3/5 klausimai, fokusas, 375/1440 px |
@@ -58,8 +65,9 @@ Commit, push, merge ir deploy agentas nevykdė. 5 etapas nepradėtas.
 | Kliento produkciniai JS failai | Nerasta `GEMINI_API_KEY`, `AI_SERVER_SECRET`, `sb_secret_`, `service_role` |
 | Naujos migracijos vykdymas ir kvotos tikroje DB | PASS; atskirai patvirtinta migracija pritaikyta, SQL RLS / kvotų patikros atšauktos ROLLBACK |
 | Tikras Gemini standalone | PASS; viena atskirai patvirtinta tikra užklausa, 3 klausimai, formatas patikrintas |
-| Tikro modelio turinio edukacinė kokybė | NOT TESTED; formato patikra neatstoja turinio peržiūros |
-| Live UI, tikro generavimo išsaugojimas / šalinimas dviem naudotojams | NOT TESTED; priklauso nuo aukščiau esančių punktų |
+| Tikro modelio turinio edukacinė kokybė | Ribota vieno realaus 5 klausimų rezultato peržiūra; pastebėti terminų / teiginių apimties netikslumai aprašyti E2E ataskaitoje |
+| Paskyros UI / tikros DB srautas dviem naudotojams su fixture modeliu | 16 PASS; 3/5 klausimai, save, reload, RLS, delete; Gemini nekviestas |
+| Visas srautas su tikru modelio rezultatu | 10 PASS su `gemini-3.5-flash-lite`; 1 atskirai patvirtintas tikras kvietimas |
 
 Pirmi Edge paleidimai sandbox aplinkoje negavo CDP atsakymo. Pakartojus tuos
 pačius scenarijus su leidžiamu vietinės naršyklės paleidimu visi praėjo.
@@ -82,9 +90,10 @@ Vercel patikimo IP antraštė aprašyta
 [platformos dokumentacijoje](https://vercel.com/docs/headers/request-headers);
 jos veikimas bus tikrinamas publikavimo etape. Kitam proxy adapteris dar neįgyvendintas.
 
-Raktas prijungtas, vartotojas nurodė Free planą; vienas atskirai patvirtintas
-tikras `gemini-4-hydrogen` standalone kvietimas praėjo. Toliau reikalingas atskiras
-leidimas papildomiems kvietimams viso programos srauto ir 5 klausimų patikrai.
+Raktas prijungtas, vartotojas nurodė Free planą; tikri 3 klausimų standalone ir
+5 klausimų paskyros srauto bandymai praėjo. Tarp jų du 4 Hydrogen bandymai
+nepavyko, bent viename patvirtintas tiekėjo HTTP 503; klaidos nepaslėptos demo.
 `202611160002_ai_limits_and_saved_results.sql` migracija projekte `ArtMysteryAI`
-jau atskirai patvirtinta ir patikrinta. Tikras visas paskyros srautas dar netikrintas.
-Tik po priėmimo spręsti dėl 4 etapo užbaigimo. 5 etapo leidimo šiuo metu neprašoma.
+jau atskirai patvirtinta ir patikrinta. Tikras visas paskyros srautas patikrintas
+su 3.5 Flash-Lite. 4 etapas užbaigtas; įprastas generavimas paliktas išjungtas
+pagal suteiktų bandymo leidimų ribas. 5 etapui reikia „PATVIRTINU 5 ETAPĄ“.

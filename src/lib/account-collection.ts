@@ -57,6 +57,21 @@ export async function readCollectionBody(request: Request): Promise<unknown> {
 }
 
 export function requireSameOrigin(request: Request) {
-  if (request.headers.get("origin") !== new URL(request.url).origin
-    || request.headers.get("sec-fetch-site") === "cross-site") throw new AccountCollectionError("forbidden", 403);
+  const denied = () => { throw new AccountCollectionError("forbidden", 403); };
+  if (request.headers.get("sec-fetch-site") === "cross-site") return denied();
+  const value = request.headers.get("origin");
+  if (!value) return denied();
+  const target = new URL(request.url);
+  if (value === target.origin) return;
+  try {
+    const origin = new URL(value);
+    const loopback = (hostname: string) => ["localhost", "127.0.0.1", "[::1]"].includes(hostname);
+    // NextURL normalizuoja loopback IP į localhost. Originalų naršyklės adresą
+    // šiuo vienu atveju tikriname pagal Host, nekeisdami protokolo ar prievado.
+    // Forwarded antraštės šiai išimčiai nenaudojamos.
+    if (value === origin.origin && loopback(target.hostname) && loopback(origin.hostname)
+      && origin.protocol === target.protocol && origin.port === target.port
+      && request.headers.get("host")?.toLowerCase() === origin.host) return;
+  } catch { /* Netinkamas Origin atmetamas. */ }
+  return denied();
 }

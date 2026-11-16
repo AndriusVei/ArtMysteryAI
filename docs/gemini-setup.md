@@ -1,22 +1,26 @@
 # Gemini prijungimas — 4 etapas
 
-2026-11-16. Vietinis kodas paruoštas, raktas prijungtas. Vienas atskirai patvirtintas
-tikras `gemini-4-hydrogen` bandymas praėjo; rezultatai `docs/phase-4-gemini-acceptance.md`.
+2026-11-16–17. 4 etapo funkcinis priėmimas užbaigtas, raktas prijungtas.
+Dabartinis modelis `gemini-3.5-flash-lite`: tikras 5 klausimų paskyros srautas praėjo.
+Naujausi rezultatai `docs/phase-4-e2e-acceptance.md`; ankstesnis standalone
+`gemini-4-hydrogen` bandymas aprašytas `docs/phase-4-gemini-acceptance.md`.
 Toliau pateikti rakto sukūrimo žingsniai palikti naujai aplinkai.
 AI migracija jau atskirai patvirtinta ir pritaikyta; rezultatai:
 `docs/phase-4-migration-acceptance.md`.
 Atnaujinimas: vartotojas nurodė įrašęs raktą ir pasirinkęs Free planą.
 Paslauga priėmė raktą pirmame patvirtintame bandyme. Projekto billing / kvotų
-administravimo nevykdyta. Nustatytas `GEMINI_MODEL=gemini-4-hydrogen`,
+administravimo nevykdyta. Nustatytas `GEMINI_MODEL=gemini-3.5-flash-lite`,
 `AI_LIVE_ENABLED=false`; programos generavimas išjungtas.
 Pagal 2026-11-16 [Google dokumentaciją](https://aistudio.google.com/docs/models)
 2.5 šeimos prieiga ribojama ankstesniems naudotojams, 2.5 Flash nebėra siūlomas
-naujiems projektams ir yra deprecated. Siūlomas pirmojo bandymo modelis
+naujiems projektams ir yra deprecated. Pirmojo bandymo modelis buvo
 `gemini-4-hydrogen`: [JSON palaikymas](https://aistudio.google.com/docs/models/gemini-4-hydrogen)
 ir [Free kainodara](https://aistudio.google.com/docs/pricing#gemini-4-hydrogen)
 patikrinti dokumentacijoje, o šio rakto prieiga patvirtinta viena sėkminga užklausa.
 Modelio pakeitimas ir pirmas bandymas jau atskirai patvirtinti ir atlikti;
-papildomoms modelio užklausoms reikia naujo leidimo.
+vėliau du 4 Hydrogen bandymai nepavyko, bent viename gautas Google HTTP 503.
+Po naujo atskiro leidimo 3.5 Flash-Lite tikras generavimas ir jo išsaugojimo
+srautas patikrinti sėkmingai. Papildomoms modelio užklausoms reikia naujo leidimo.
 Ši instrukcija nėra leidimas mokamai užklausai, debesijos migracijai ar publikavimui.
 
 ## 1. Raktas ir nemokamas planas
@@ -76,7 +80,8 @@ Tikslinis projektas `ArtMysteryAI` (`qjqkjtqqvzbzihueuqzu`).
 Vartotojo atskiras leidimas gautas. Nuotolinės DB būklė ir dry-run patikrinti;
 pritaikyta tik ši migracija. Tikros DB kvotų, užraktų ir dviejų SQL tapatybių RLS
 patikros praėjo vienoje ROLLBACK transakcijoje. Vienalaikių atskirų jungčių
-apkrovos testas ir dviejų naršyklės sesijų visas DI srautas dar neatlikti.
+apkrovos testas dar neatliktas. Dviejų naršyklės sesijų integracija vėliau
+patikrinta pagal `docs/phase-4-e2e-acceptance.md`.
 
 ## 4. Programos įjungimas ir priėmimas
 
@@ -93,7 +98,9 @@ Po env pakeitimų serverį paleisti iš naujo.
 Prisijungus: kūrinys → tyrimo parametrai → generavimas → išsaugojimas →
 `/investigations` → perkrovimas → šalinimas su patvirtinimu. Patikrinti 3 ir
 5 klausimus, faktų bei interpretacijų atskyrimą, kitą naudotoją ir klaidų būsenas.
-Šios visos tikros integracijos patikros dar NEATLIKTOS.
+Šios darbo vietos 4 etapo priėmimas jau atliktas: 3 klausimų tikras standalone,
+3/5 klausimų UI su fixture modeliu ir tikras 5 klausimų paskyros srautas.
+Vykdant naujoje aplinkoje patikras pakartoti tik su nauju konkrečiu leidimu.
 
 Kvotos įgyvendintos DB fiksuotais UTC intervalais: naudotojui 2/min ir 10/dieną,
 IP 5/min ir 20/dieną, visam projektui 20/dieną; viena aktyvi užklausa naudotojui.

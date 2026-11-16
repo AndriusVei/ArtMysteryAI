@@ -26,6 +26,10 @@ ir jokių DB įrašų. Mokėjimo ar bendro generavimo programoje įjungimas nepa
 
 ## Kas dar nepriimta
 
+Tai šio pirmo standalone bandymo apimties ribos. Vėliau 4 etapo tikras paskyros
+srautas priimtas su atskirai patvirtintu `gemini-3.5-flash-lite`;
+naujausi rezultatai yra `docs/phase-4-e2e-acceptance.md`.
+
 Tai standalone integracijos bandymas. Jis nepatvirtina viso naršyklės
 `/api/ai` → DB juodraščio → išsaugojimo → perkrovimo → pašalinimo srauto,
 dviejų naršyklės paskyrų izoliacijos ar 5 klausimų tikro generavimo.

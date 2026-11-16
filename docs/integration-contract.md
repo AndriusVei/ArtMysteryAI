@@ -75,8 +75,9 @@ API klaidos: `{error:{code,message}}`, privatūs atsakymai necache'inami.
 `POST /api/investigations` priima tik `generationId`, modelio JSON iš naršyklės nepriimamas.
 `GET` grąžina tik savininko išsaugotus rezultatus; `DELETE` pašalina tik jo rezultatą.
 AI migracija atskirai patvirtinta ir pritaikyta; tikri SQL RLS / kvotų testai praėjo.
-Vienas tikras standalone Gemini bandymas praėjo; visas generavimo / išsaugojimo
-srautas dar nepatikrintas. Rezultatai: `docs/phase-4-gemini-acceptance.md`.
+Tikras 3 klausimų standalone bandymas ir 5 klausimų paskyros srautas praėjo;
+pastarasis su atskirai patvirtintu `gemini-3.5-flash-lite`. Rezultatai:
+`docs/phase-4-e2e-acceptance.md`. 4 etapo funkcinis priėmimas užbaigtas.
 Žr. `docs/phase-4-a-report.md` ir `docs/gemini-setup.md`.
 Paruošta B parametrų forma ir demo adapteris. Sutartys:
 `src/types/investigation.ts`, tikrinimas ir vietinis šablonas `src/lib/investigation.ts`.
@@ -91,9 +92,9 @@ demo rezultatai į paskyrą automatiškai nekeliami.
 Muziejaus vieša API naudojama su talpinimu podėlyje ir ribotomis užklausomis.
 Paveikslai tik su patikrintu `image_id` ir teisių informacija.
 Supabase Auth ir paskyros kolekcija jau naudoja tikrą projektą; patikrinta realiais
-naudotojais. Gemini serveris paruoštas, tačiau tikri tyrimai išjungti, kol nėra
-viso paskyros srauto priėmimo. Raktas ir modelis prijungti, viena tikra standalone
-užklausa patikrinta. AI migracija jau atskirai patvirtinta ir pritaikyta.
+naudotojais. Gemini serveris ir visas paskyros srautas patikrinti, bet įprastas
+generavimas lieka išjungtas pagal ribotų bandymų leidimų apimtį. Jo įjungimui
+reikia atskiro leidimo. AI migracija jau atskirai patvirtinta ir pritaikyta.
 Demo lieka prieinamas.
 Naudojant paslaugas tikrinti tuo metu galiojančias nemokamas kvotas;
 viršijus limitą rodyti klaidą, automatiškai nepereiti į mokamą paslaugą.

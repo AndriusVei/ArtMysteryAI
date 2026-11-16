@@ -4,6 +4,8 @@ import { validateCredentials, validateEmail, safeAuthNext, authErrorMessage } fr
 import { supabaseConfiguration, configuredSiteOrigin } from "../src/lib/supabase/config.ts";
 import { AccountCollectionError, parseAccountCollectionItem, validateCollectionMutation, readCollectionBody, requireSameOrigin } from "../src/lib/account-collection.ts";
 import { createAccountCollectionRepository } from "../src/lib/account-collection-repository.ts";
+import { createRequire } from "node:module";
+const { NextURL } = createRequire(import.meta.url)("next/dist/server/web/next-url.js");
 
 const item = { id: "11111111-1111-4111-8111-111111111111", artworkId: 16568, title: "Water Lilies", artist: "Claude Monet", hasImage: true,
   category: "favorites", notes: "", createdAt: "2026-11-16T12:00:00.000000+00:00", updatedAt: "2026-11-16T12:00:00.000001+00:00" };
@@ -55,6 +57,27 @@ test("paskyros įrašas tikrinamas vykdymo metu ir neatiduoda papildomų laukų"
 test("mutacijos priima tik tos pačios svetainės užklausas", () => {
   requireSameOrigin(new Request("http://localhost:3000/api/collection", { headers: { Origin: "http://localhost:3000" } }));
   for (const headers of [{}, { Origin: "https://evil.example" }, { Origin: "http://localhost:3000", "Sec-Fetch-Site": "cross-site" }]) assert.throws(() => requireSameOrigin(new Request("http://localhost:3000/api/collection", { headers })), AccountCollectionError);
+});
+
+test("NextURL normalizuotas localhost leidžia tik tikrą tos pačios loopback svetainės Host", () => {
+  const target = "http://localhost:3187/api/collection";
+  for (const host of ["127.0.0.1:3187", "[::1]:3187"]) {
+    const normalized = new NextURL(`http://${host}/api/collection`).toString();
+    requireSameOrigin(new Request(normalized, { headers: { Origin: `http://${host}`, Host: host, "Sec-Fetch-Site": "same-origin" } }));
+  }
+  for (const headers of [
+    { Origin: "http://127.0.0.1:3187" },
+    { Origin: "http://127.0.0.1:3187", Host: "localhost:3187" },
+    { Origin: "http://127.0.0.1:3000", Host: "127.0.0.1:3000" },
+    { Origin: "https://127.0.0.1:3187", Host: "127.0.0.1:3187" },
+    { Origin: "http://evil.example:3187", Host: "evil.example:3187" },
+    { Origin: "http://127.0.0.1:3187/path", Host: "127.0.0.1:3187" },
+    { Origin: "http://127.0.0.1:3187", Host: "127.0.0.1:3187", "Sec-Fetch-Site": "cross-site" },
+    { Origin: "https://evil.example", Host: "localhost:3187", "X-Forwarded-Host": "evil.example", "X-Forwarded-Proto": "https" },
+  ]) assert.throws(() => requireSameOrigin(new Request(target, { headers })), AccountCollectionError);
+  assert.throws(() => requireSameOrigin(new Request("https://app.example/api/collection", {
+    headers: { Origin: "http://127.0.0.1:3187", Host: "127.0.0.1:3187" },
+  })), AccountCollectionError);
 });
 test("JSON dydis, tipas ir sugadintas turinys ribojami prieš mutaciją", async () => {
   const request = (body, headers = { "Content-Type": "application/json" }) => new Request("http://localhost/api/collection", { method: "POST", headers, body });
