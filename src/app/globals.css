@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: #f7f5ef;
+  --color-ink: #282824;
+  --color-muted: #625e55;
+  --color-gold: #816326;
+  --color-line: #ded9cd;
+}
+
+body { background: var(--color-paper); color: var(--color-ink); font-family: Arial, Helvetica, sans-serif; }
+h1, h2, .brand { font-family: Georgia, "Times New Roman", serif; }
+h1 { letter-spacing: -0.045em; line-height: 1.08; }
+::selection { background: #e5d8b7; }
+:focus-visible { outline: 3px solid var(--color-gold); outline-offset: 5px; }
+.nav-link { padding-block: 0.35rem; text-decoration-thickness: 1px; text-underline-offset: 6px; }
+.nav-link:hover { text-decoration-line: underline; }
+.eyebrow { color: var(--color-gold); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; }
+.skip-link { position: absolute; left: 1rem; top: -8rem; padding: 1rem; background: var(--color-ink); color: white; z-index: 10; }
+.skip-link:focus { top: 1rem; }
