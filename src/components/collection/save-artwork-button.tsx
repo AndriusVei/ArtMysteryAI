@@ -10,14 +10,15 @@ export function SaveArtworkButton({ artwork }: { artwork: SaveArtworkInput }) {
   const { ready, items, error, repository } = useDemoCollection();
   const [pending, setPending] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [hasError, setHasError] = useState(false);
   const busy = useRef(false);
   const saved = items.some((item) => item.artworkId === artwork.artworkId);
 
   async function save() {
     if (busy.current || saved || !ready || error) return;
-    busy.current = true; setPending(true); setMessage(null);
+    busy.current = true; setPending(true); setMessage(null); setHasError(false);
     try { await repository.save(artwork); setMessage("Kūrinys išsaugotas šios naršyklės demonstracinėje kolekcijoje."); }
-    catch (cause) { setMessage(collectionErrorMessage(cause)); }
+    catch (cause) { setHasError(true); setMessage(collectionErrorMessage(cause)); }
     finally { busy.current = false; setPending(false); }
   }
 
@@ -28,7 +29,7 @@ export function SaveArtworkButton({ artwork }: { artwork: SaveArtworkInput }) {
         {pending ? "Išsaugoma…" : !ready ? "Tikrinama kolekcija…" : saved ? "Jau demonstracinėje kolekcijoje" : "Išsaugoti į demo kolekciją"}
       </button>
       <p className="mt-3 text-xs leading-6 text-muted">Demonstracinis režimas · tik šioje naršyklėje.</p>
-      {(error || message) && <p role="status" className="mt-3 text-sm leading-7">{error ?? message}</p>}
+      {(error || message) && <p role={error || hasError ? "alert" : "status"} className="mt-3 text-sm leading-7">{error ?? message}</p>}
       <Link href="/collection" className="mt-4 inline-block text-sm underline underline-offset-8">Peržiūrėti mano kolekciją →</Link>
     </div>
   );

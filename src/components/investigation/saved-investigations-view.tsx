@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { investigationModes, investigationStorageMessage, knowledgeLevels } from "@/lib/investigation";
 import type { SavedInvestigation } from "@/types/investigation";
 import { useDemoInvestigations } from "./use-demo-investigations";
@@ -13,6 +13,8 @@ function SavedCard({ item, remove }: { item: SavedInvestigation; remove: (id: st
   const [error, setError] = useState<string | null>(null);
   const busy = useRef(false);
   const cancelFocus = useRef<HTMLButtonElement>(null);
+  const cancelConfirmation = useRef<HTMLButtonElement>(null);
+  useEffect(() => { if (confirm) cancelConfirmation.current?.focus(); }, [confirm]);
   async function deleteItem() {
     if (busy.current) return;
     busy.current = true; setPending(true); setError(null);
@@ -35,7 +37,7 @@ function SavedCard({ item, remove }: { item: SavedInvestigation; remove: (id: st
         <p>Ar pašalinti kūrinio „{item.artworkTitle}“ tyrimą iš šios naršyklės?</p>
         <div className="mt-3 flex flex-wrap gap-3">
           <button disabled={pending} onClick={deleteItem} className="min-h-12 bg-ink px-4 py-3 text-paper disabled:opacity-60">{pending ? "Šalinama…" : "Taip, pašalinti"}</button>
-          <button disabled={pending} onClick={() => { setConfirm(false); setError(null); requestAnimationFrame(() => cancelFocus.current?.focus()); }} className="min-h-12 border border-line px-4 py-3">Atšaukti</button>
+          <button ref={cancelConfirmation} disabled={pending} onClick={() => { setConfirm(false); setError(null); requestAnimationFrame(() => cancelFocus.current?.focus()); }} className="min-h-12 border border-line px-4 py-3">Atšaukti</button>
         </div>
       </div>}
     {error && <p role="alert" className="mt-3 text-sm">{error}</p>}
@@ -55,7 +57,7 @@ export function SavedInvestigationsView() {
     setMessage("Tyrimas pašalintas iš šios naršyklės.");
     heading.current?.focus();
   }
-  return <main className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-20">
+  return <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-20">
     <p className="eyebrow">Asmeninė tyrimų užrašinė</p>
     <h1 ref={heading} tabIndex={-1} className="mt-5 text-4xl sm:text-6xl">Mano DI tyrimai</h1>
     <aside aria-label="Tyrimų saugyklos demonstracinis režimas" className="mt-7 border-l-2 border-gold bg-white/50 p-5 text-sm leading-7">
@@ -73,5 +75,5 @@ export function SavedInvestigationsView() {
         <p role="status" className="mt-5 text-sm text-muted">Rodoma {filtered.length} iš {items.length} išsaugotų tyrimų (iki 30).</p>
         {filtered.length ? <div className="mt-6 space-y-6">{filtered.map((item) => <SavedCard key={item.id} item={item} remove={remove} />)}</div> : <p className="mt-8">Pagal pasirinktus filtrus tyrimų nėra.</p>}
       </>}
-  </main>;
+  </div>;
 }

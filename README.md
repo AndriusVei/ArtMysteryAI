@@ -24,6 +24,7 @@ Kolekcija: [3 etapo B ataskaita](docs/phase-3-b-report.md) ir
 [integracijos sutartis](docs/developer-b-collection.md).
 DI parametrų sąsaja: [B integracijos sutartis](docs/developer-b-investigation.md).
 Išsaugoti tyrimai: [B saugojimo sutartis](docs/developer-b-saved-investigations.md).
+Dizaino ir prieinamumo patikra: [6 etapo B ataskaita](docs/phase-6-b-report.md).
 
 ## Paleidimas Windows aplinkoje
 
