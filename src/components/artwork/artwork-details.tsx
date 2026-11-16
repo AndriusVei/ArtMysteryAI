@@ -6,6 +6,7 @@ import type { Artwork } from "@/types/artwork";
 import type { ArtworkTranslation } from "@/types/artwork-translation";
 import { ArtworkImage } from "./artwork-image";
 import { SaveArtworkButton } from "@/components/collection/save-artwork-button";
+import { InvestigationPanel } from "@/components/investigation/investigation-panel";
 
 export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; translation: ArtworkTranslation | null }) {
   const [language, setLanguage] = useState<"lt" | "en">(translation ? "lt" : "en");
@@ -89,6 +90,7 @@ export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; tra
           </> : <p className="leading-8 text-muted">Muziejus šio kūrinio aprašymo nepateikė. Papildomos istorijos ar autoriaus ketinimų nepridedame.</p>}
         </div>
       </section>
+      <InvestigationPanel key={artwork.id} artwork={text} />
     </article>
   );
 }

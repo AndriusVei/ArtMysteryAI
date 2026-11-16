@@ -55,6 +55,9 @@ Kolekcijos demo adapteris jau paruoštas: `src/lib/demo-collection.ts` ir
 ir apribojimai: `docs/developer-b-collection.md`. Demo įrašai automatiškai į paskyrą neperkeliami.
 Gemini adapteris naudos A serverio sąsają; joks raktas nekeliauja į naršyklę.
 DI rezultatų schemą ir klaidų formatą A ir B suderins prieš integraciją.
+Paruošta B parametrų forma ir demo adapteris. Sutartys:
+`src/types/investigation.ts`, tikrinimas ir vietinis šablonas `src/lib/investigation.ts`.
+Integracijos detalės: `docs/developer-b-investigation.md`. A `/api/ai` B nekūrė.
 
 ## Nemokamas režimas
 
