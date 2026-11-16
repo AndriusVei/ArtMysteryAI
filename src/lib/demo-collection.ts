@@ -1,4 +1,5 @@
 import type { CollectionCategory, CollectionChanges, CollectionItem, CollectionRepository, SaveArtworkInput } from "@/types/collection";
+import { AccountCollectionError } from "./account-collection.ts";
 
 export const DEMO_COLLECTION_KEY = "artmystery:demo:collection:v1";
 export const MAX_COLLECTION_ITEMS = 100;
@@ -28,7 +29,7 @@ export class CollectionError extends Error {
 }
 
 export function collectionErrorMessage(error: unknown): string {
-  return error instanceof CollectionError ? error.message : messages.storage;
+  return error instanceof CollectionError || error instanceof AccountCollectionError ? error.message : messages.storage;
 }
 
 function record(value: unknown): value is Record<string, unknown> {

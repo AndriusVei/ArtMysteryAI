@@ -29,7 +29,10 @@ autoriaus filtras, puslapiavimas, kortelės ir nuorodos į B detales.
 `GET /api/artworks` ir puslapis naudoja `searchArtworks` iš `src/lib/artic.ts`;
 esamos B detalių ir vaizdų funkcijos nekeistos. Rezultatai ir ribos:
 `docs/phase-2-a-report.md`.
-`/login` vis dar informacinis puslapis; autentifikacijos logikos nėra.
+3 etape paruošti `/login`, `/register`, `/profile`, Supabase SSR slapukai,
+serverio sesijos patikra ir paskyros kolekcijos API. Konfigūracijos dar nėra;
+tikros sesijos ir RLS nepatvirtinti. Žr. `docs/supabase-setup.md` ir
+`docs/phase-3-a-report.md`. Tai nėra užbaigto 3 etapo priėmimo žyma.
 Nekurti pakartotinio Next.js pagrindo kitame kataloge.
 
 ## Bendri failai
@@ -53,8 +56,12 @@ Detalių duomenų gavimą sutelkti `src/lib/artic.ts`, nedubliuoti kiekviename p
 Paieškos kortelė turi naudoti `<Link href={\`/artwork/${result.id}\`}>`.
 API atsakymų ir bandymų sutartis: `docs/developer-b-artwork-details.md`.
 
-Supabase adapterį ir serveriu patikrintą naudotojo tapatybę prijungs A.
-B demonstraciniai adapteriai bus atskirti nuo tikro saugojimo ir aiškiai pažymėti UI;
+3 etape A pridėjo `CollectionProvider` ir paskyros adapterį, įgyvendinantį esamą
+`CollectionRepository`. B komponentai naudoja `useCollection`, o originalus
+`useDemoCollection` paliktas demo provider viduje. Rodinio tekstai priklauso
+nuo adapterio režimo. Serverio `/api/collection` tikrina naudotoją ir nuosavybę;
+tikrų duomenų integracija dar laukia Supabase konfigūracijos bei RLS bandymų.
+B demonstraciniai adapteriai atskirti nuo tikro saugojimo ir aiškiai pažymėti UI;
 localStorage duomenys nėra paskyros duomenys. Nekurti fiktyvios autentifikacijos.
 Kolekcijos demo adapteris jau paruoštas: `src/lib/demo-collection.ts` ir
 `CollectionRepository` sutartis `src/types/collection.ts`. Detalės A integracijai

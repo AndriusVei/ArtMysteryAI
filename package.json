@@ -2,7 +2,9 @@
   "name": "artmystery-ai",
   "version": "0.1.0",
   "private": true,
-  "engines": { "node": ">=26.13.0 <27" },
+  "engines": {
+    "node": ">=26.13.0 <27"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +14,8 @@
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.119.0",
     "next": "16.4.6",
     "react": "19.3.1",
     "react-dom": "19.3.1"

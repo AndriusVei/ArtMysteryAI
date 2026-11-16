@@ -6,10 +6,11 @@ import type { CollectionCategory } from "@/types/collection";
 import { collectionCategories } from "@/lib/demo-collection";
 import { CollectionCard } from "./collection-card";
 import { DemoNotice } from "./demo-notice";
-import { useDemoCollection } from "./use-demo-collection";
+import { useCollection } from "./collection-provider";
 
 export function CollectionView() {
-  const { ready, items, error, repository } = useDemoCollection();
+  const { ready, items, error, repository, refresh } = useCollection();
+  const account = repository.mode === "account";
   const [category, setCategory] = useState<CollectionCategory | "all">("all");
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
@@ -21,7 +22,7 @@ export function CollectionView() {
   }, [items, category, query]);
 
   function removed(title: string) {
-    setMessage(`Kūrinys „${title}“ pašalintas iš demonstracinės kolekcijos.`);
+    setMessage(`Kūrinys „${title}“ pašalintas iš ${account ? "paskyros" : "demonstracinės"} kolekcijos.`);
     heading.current?.focus();
   }
 
@@ -30,14 +31,15 @@ export function CollectionView() {
       <p className="eyebrow">Tavo meno atradimai</p>
       <h1 ref={heading} tabIndex={-1} className="mt-5 text-4xl sm:text-6xl">Mano kolekcija</h1>
       <p className="mt-6 max-w-xl text-lg leading-8 text-muted">Kūriniai, prie kurių norisi sugrįžti. Suskirstyk juos pagal savo smalsumą ir užrašyk, ką pastebėjai.</p>
-      <div className="mt-8"><DemoNotice /></div>
+      <div className="mt-8">{account ? <aside className="border-l-2 border-gold bg-white/50 p-5 text-sm leading-7"><p className="font-semibold">Paskyros kolekcija</p><p>Rodomi tik tavo paskyros kūriniai. Demonstraciniai naršyklės įrašai lieka atskirti.</p></aside> : <DemoNotice />}</div>
+      {refresh && <button type="button" onClick={refresh} className="mt-4 min-h-11 underline underline-offset-4">Atnaujinti kolekciją</button>}
       <p role="status" aria-live="polite" className="mt-5 text-sm leading-7">{message}</p>
-      {!ready ? <p role="status" className="py-12 text-muted">Įkeliama šios naršyklės kolekcija…</p>
+      {!ready ? <p role="status" className="py-12 text-muted">{account ? "Įkeliama paskyros kolekcija…" : "Įkeliama šios naršyklės kolekcija…"}</p>
         : error ? <div role="alert" className="mt-8 border border-line p-6"><h2 className="text-2xl">Kolekcijos atverti nepavyko</h2><p className="mt-4 leading-8 text-muted">{error}</p></div>
         : items.length === 0 ? <section className="mt-8 border-y border-line py-16 text-center">
           <p className="eyebrow">Pirmas atradimas dar priešakyje</p>
           <h2 className="mt-5 text-3xl">Kuri istorija taps tavo pirmąja?</h2>
-          <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-muted">Atverk muziejaus kūrinį ir paspausk „Išsaugoti į demo kolekciją“. Čia atsiras tavo išsaugoti kūriniai.</p>
+          <p className="mx-auto mt-5 max-w-lg text-sm leading-7 text-muted">Atverk muziejaus kūrinį ir paspausk „{account ? "Išsaugoti į mano kolekciją" : "Išsaugoti į demo kolekciją"}“. Čia atsiras tavo išsaugoti kūriniai.</p>
           <Link href="/artwork/16568" className="mt-7 inline-flex min-h-12 items-center bg-ink px-6 py-3 text-sm text-paper hover:bg-gold">Atrasti Monet „Vandens lelijas“ →</Link>
         </section> : <>
           <div className="mt-8 border-t border-line pt-8">

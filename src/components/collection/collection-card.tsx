@@ -40,7 +40,7 @@ export function CollectionCard({ item, repository, onRemoved }: {
     busy.current = true; setPending(true); setMessage(null); setHasError(false);
     try {
       await repository.update(item.artworkId, { category, notes }, version);
-      setEditing(false); setMessage("Kategorija ir pastaba išsaugotos šioje naršyklėje.");
+      setEditing(false); setMessage(repository.mode === "account" ? "Kategorija ir pastaba išsaugotos paskyroje." : "Kategorija ir pastaba išsaugotos šioje naršyklėje.");
       requestAnimationFrame(() => editButton.current?.focus());
     } catch (error) { setHasError(true); setMessage(collectionErrorMessage(error)); }
     finally { busy.current = false; setPending(false); }
@@ -97,7 +97,7 @@ export function CollectionCard({ item, repository, onRemoved }: {
           </div>
         </>}
         {confirming && <div id={`${fieldId}-remove`} role="group" aria-label="Patvirtinti kūrinio pašalinimą" className="mt-5 border border-line bg-paper p-4">
-          <p className="text-sm leading-7">Pašalinti šį kūrinį iš demonstracinės kolekcijos? Jo pastabos taip pat bus pašalintos.</p>
+          <p className="text-sm leading-7">Pašalinti šį kūrinį iš {repository.mode === "account" ? "paskyros" : "demonstracinės"} kolekcijos? Jo pastabos taip pat bus pašalintos.</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button type="button" onClick={remove} disabled={pending} className="min-h-12 bg-ink px-4 py-3 text-sm text-paper disabled:opacity-50">{pending ? "Šalinama…" : "Taip, pašalinti"}</button>
             <button type="button" ref={cancelRemoveButton} disabled={pending} onClick={() => { setConfirming(false); setMessage(null); removeButton.current?.focus(); }} className="min-h-12 px-3 py-3 text-sm underline underline-offset-4">Atšaukti pašalinimą</button>
