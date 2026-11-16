@@ -1,5 +1,12 @@
 # Kūrėjas A: 3 etapo vietinė dalis
 
+Atnaujinimas po naudotojo prisijungimo per terminalą (2026-11-16): Supabase CLI
+prieiga patvirtinta, projektas „ArtMysteryAI“ rastas ir susietas su šiuo katalogu.
+Vieša konfigūracija įrašyta į ignoruojamą `.env.local`; Auth nustatymų HTTP 200
+patikra praėjo. Public schema pagal tik skaitymo SQL tuščia. Migracija vis dar
+nevykdyta, tikri auth/CRUD/RLS priėmimo scenarijai neatlikti. Toliau esanti
+vietinės dalies ataskaita aprašo pradinę būseną prieš šį prijungimą.
+
 Data: 2026-11-16. Patvirtinimas: „PATVIRTINU 3 ETAPĄ“.
 Pradinis commit: `75f5ef87eb4c648e8a49ebb5979f53d5d86222fa`.
 Vietinė šaka: `feature/a-auth-collection`.

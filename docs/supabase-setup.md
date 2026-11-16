@@ -1,14 +1,28 @@
 # Supabase prijungimas – 3 etapo likusi dalis
 
-Paruoštas vietinis kodas, tačiau Supabase projekto dar nėra. Ši instrukcija nėra
+## Patikrinta prijungimo būsena (2026-11-16)
+
+- Naudotojas prisijungė per vietinį Supabase CLI, ne per papildinį.
+- Rastas ir su šiuo katalogu susietas jo projektas „ArtMysteryAI“.
+- URL ir viešas publishable raktas automatiškai įrašyti į ignoruojamą `.env.local`.
+  Raktas terminalo ataskaitose nerodomas; secret/service_role nereikėjo.
+- Viešas Auth nustatymų adresas grąžino HTTP 200: email registracija įjungta,
+  naujų registracijų draudimas išjungtas, automatinis email patvirtinimas išjungtas
+  (vartotojas turi patvirtinti laišką).
+- Tik skaitymo SQL patvirtino, kad public schemoje lentelių nėra.
+- CLI susiejimo metaduomenys `supabase/.temp/` papildomai ignoruojami Git.
+- Migracija dar nevykdyta, paskyros ir jų duomenys nekuriami. Prieš migraciją
+  reikia atskiro konkretaus leidimo pagal MASTER PROMPT 19 skyrių.
+
+Paruoštas vietinis kodas ir prijungtas projektas. Toliau pateikta bendra instrukcija nėra
 automatinis leidimas kurti debesijos išteklius ar vykdyti SQL. Prieš agentui tai
 darant reikalingas atskiras aiškus patvirtinimas, kaip numato MASTER PROMPT.
 Nenaudoti esamos bazės su svarbiais duomenimis šiai pradinei migracijai.
 
 ## Automatizuojamo prijungimo eiga
 
-1. **Vietinė parengtis:** SDK, kodas ir migracija jau paruošti. Sukurtas Git
-   ignoruojamas `.env.local` su tuščiais Supabase laukais; tai dar ne ryšys.
+1. **Vietinė parengtis:** SDK, kodas ir migracija paruošti. Git ignoruojamas
+   `.env.local` jau užpildytas per CLI; žr. patikrintą būseną dokumento pradžioje.
 2. **Prieiga:** įdiegti Supabase papildinį ir pačiam prisijungti prie savo
    paskyros. Prisijungimo duomenų pokalbyje pateikti nereikia. Jei papildinio
    nenaudojame, projektą vartotojas sukuria Supabase valdymo skydelyje.
