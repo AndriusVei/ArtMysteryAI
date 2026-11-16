@@ -9,10 +9,13 @@ Vaizdą iš muziejaus IIIF gauna mūsų serveris ir naršyklei pateikia per
 `/collection` prisijungus saugo į Supabase paskyrą; svečiui veikia atskira
 demonstracinė kolekcija šioje naršyklėje. Yra kategorijos, pastabos, filtrai ir
 pašalinimas su patvirtinimu. Demo įrašai automatiškai neperkeliami į paskyrą.
-Kūrinio puslapyje pridėta „Meno detektyvo“ parametrų forma ir vietinis tyrimo
-pavyzdys. Gemini neprijungtas, mokamų užklausų nėra. Mygtukas „Išsaugoti pavyzdį“
-išsaugo rezultatą šioje naršyklėje; `/investigations` leidžia peržiūrėti visą tyrimą,
-filtruoti ir pašalinti su patvirtinimu. Tai demonstraciniai, ne paskyros duomenys.
+Kūrinio puslapyje yra B „Meno detektyvo“ forma. 4 etape pridėtas Gemini serveris
+ir paskyros tyrimų adapteris. Nauja AI DB migracija atskirai patvirtinta ir
+pritaikyta; raktas prijungtas ir vienas atskirai patvirtintas tikras Gemini bandymas
+praėjo. Bendras generavimas išjungtas, kol nepatikrintas visas paskyros srautas.
+Veikia aiškiai pažymėtas vietinis pavyzdys.
+Mygtukas „Išsaugoti pavyzdį“ saugo naršyklėje; `/investigations` leidžia peržiūrėti,
+filtruoti ir pašalinti. Demo įrašai į paskyrą automatiškai neperkeliami.
 A paieška veikia `/explore`: raktažodis, autoriaus filtras, abu kriterijai kartu,
 rezultatų kortelės ir puslapiavimas. Paspaudus pavadinimą atveriamos esamos B
 detalės. Kriterijai saugomi URL; rodomi originalo kalbos metaduomenys ir
@@ -26,11 +29,13 @@ dviejų prisijungusių naudotojų izoliacija patikrinti. Įrodymai:
 [3 etapo priėmimas](docs/phase-3-acceptance.md).
 Be konfigūracijos išlieka demo režimas.
 Prijungimas: [Supabase instrukcija](docs/supabase-setup.md).
-Gemini ir tikrų AI tyrimų paskyros saugojimas priklauso 4 etapui.
+Gemini prijungimo eiga: [instrukcija](docs/gemini-setup.md).
+4 etapas dar nepriimtas; [vietinės patikros ir likę darbai](docs/phase-4-a-report.md).
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
-Nėra mokamų užklausų, raktų ar automatinių publikavimo veiksmų.
+Mokamų užklausų ir automatinių publikavimo veiksmų neatlikta. Privatūs raktai
+laikomi tik ignoruojamame `.env.local`, jų į Git kelti negalima.
 
 Faktiškai atliktos patikros ir apribojimai: [1 etapo ataskaita](docs/phase-1-report.md).
 Naujausi B detalių rezultatai: [2 etapo ataskaita](docs/phase-2-report.md).
@@ -71,7 +76,8 @@ npm.cmd run start
 Patikrinkite pradinį puslapį, visas keturias navigacijos nuorodas ir
 `/neegzistuojantis-puslapis` (lietuviškas 404). Naršyklėje patikrinkite 375 px ir
 1440 px pločius, Tab navigaciją bei nuorodą „Pereiti prie turinio“.
-`npm test` tikrina muziejaus atsakymų validavimą ir klaidų atvejus be tinklo užklausų.
+`npm test` tikrina muziejaus atsakymus, autentifikacijos validavimą, saugojimo
+adapterius ir DI srautą su imituotu Gemini HTTP, be tikrų modelio kvietimų.
 Tai nėra naršyklės ar visos programos funkcinių testų rinkinys.
 
 Kai serveris veikia vietoje, paieškos patikrą galima paleisti atskirame terminale:

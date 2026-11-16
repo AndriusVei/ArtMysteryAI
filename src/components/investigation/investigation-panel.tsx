@@ -1,5 +1,7 @@
 "use client";
 
+import { useInvestigations } from "./investigation-provider";
+import { createLiveInvestigationService, investigationError } from "@/lib/account-investigations";
 import { InvestigationResultView } from "./investigation-result-view";
 import { SaveInvestigationButton } from "./save-investigation-button";
 import { useEffect, useRef, useState } from "react";
@@ -12,6 +14,7 @@ import {
 import type { ResearchFieldErrors } from "@/lib/investigation";
 
 export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
+  const { liveEnabled } = useInvestigations();
   const [settings, setSettings] = useState<ResearchSettings>({ ...defaultResearchSettings });
   const [userPrompt, setUserPrompt] = useState("");
   const [response, setResponse] = useState<InvestigationResponse | null>(null);
@@ -42,10 +45,10 @@ export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
     const controller = new AbortController();
     active.current = controller; setPending(true); setResponse(null);
     try {
-      const result = await createDemoInvestigationService(artwork).generate(request, controller.signal);
+      const result = await (liveEnabled ? createLiveInvestigationService() : createDemoInvestigationService(artwork)).generate(request, controller.signal);
       if (!controller.signal.aborted) setResponse(result);
     } catch (cause) {
-      if (!controller.signal.aborted) setError(cause instanceof ResearchValidationError ? cause.message : "Pavyzdžio paruošti nepavyko. Pabandyk dar kartą.");
+      if (!controller.signal.aborted) setError(investigationError(cause));
     } finally {
       if (active.current === controller) { active.current = null; setPending(false); }
     }
@@ -56,10 +59,10 @@ export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
       <p className="eyebrow">Meno detektyvas</p>
       <h2 id="investigation-heading" ref={formHeading} tabIndex={-1} className="mt-4 text-3xl sm:text-4xl">Kokį klausimą užduosi kūriniui?</h2>
       <p className="mt-5 max-w-2xl leading-8 text-muted">Pasirink savo žinių lygį, tyrimo būdą ir klausimų skaičių. Kūrinio informacija susiejama automatiškai.</p>
-      <aside aria-label="Tyrimo demonstracinis režimas" className="mt-7 border-l-2 border-gold bg-white/50 p-5 text-sm leading-7">
-        <p className="font-semibold">Demonstracinis režimas · Gemini neprijungtas</p>
+      {liveEnabled ? <aside aria-label="Tikras DI tyrimas" className="mt-7 border-l-2 border-gold bg-white/50 p-5 text-sm leading-7"><p className="font-semibold">Gemini DI tyrimas · paskyros režimas</p><p className="text-muted">Tavo prašymas ir vieši kūrinio metaduomenys bus siunčiami Google Gemini. Kūrinio vaizdas modeliui nesiunčiamas. DI interpretacijos gali būti klaidingos. Nerašyk jautrių duomenų. Rezultatas saugomas paskyroje kaip juodraštis; į sąrašą įtrauksi jį išsaugojęs.</p></aside> : <aside aria-label="Tyrimo demonstracinis režimas" className="mt-7 border-l-2 border-gold bg-white/50 p-5 text-sm leading-7">
+        <p className="font-semibold">Demonstracinis režimas · vietinis pavyzdys</p>
         <p className="text-muted">Rodomas vietinis mokomasis pavyzdys, ne DI sugeneruotas tyrimas. Mokamų užklausų nėra. Pavyzdį gali išsaugoti tik šioje naršyklėje. Neišsaugotas pavyzdys atnaujinus puslapį dings. Nerašyk slaptažodžių ar kitų jautrių duomenų.</p>
-      </aside>
+      </aside>}
 
       <form onSubmit={submit} className="mt-8" aria-busy={pending}>
         <fieldset disabled={pending}>
@@ -100,11 +103,11 @@ export function InvestigationPanel({ artwork }: { artwork: Artwork }) {
               aria-invalid={Boolean(fieldErrors.userPrompt)} aria-describedby="research-prompt-help research-prompt-error"
               placeholder="Pavyzdžiui: norėčiau tyrinėti kartu su mokiniais."
               className="w-full resize-y border border-line bg-white/40 p-4 text-sm leading-7" />
-            <p id="research-prompt-help" className="mt-2 text-xs leading-6 text-muted">{userPrompt.length} / {MAX_USER_PROMPT_LENGTH} ženklų. Demo režime prašymas rodomas peržiūroje, bet nekeičia pavyzdžio.</p>
+            <p id="research-prompt-help" className="mt-2 text-xs leading-6 text-muted">{userPrompt.length} / {MAX_USER_PROMPT_LENGTH} ženklų. {liveEnabled ? "Prašymas bus pateiktas Gemini kartu su tyrimo pasirinkimais." : "Demo režime prašymas rodomas peržiūroje, bet nekeičia pavyzdžio."}</p>
             <p id="research-prompt-error" className="mt-2 text-sm">{fieldErrors.userPrompt}</p>
           </div>
           <button type="submit" disabled={pending} className="mt-6 min-h-12 bg-ink px-6 py-4 text-sm text-paper hover:bg-gold disabled:cursor-wait disabled:opacity-60">
-            {pending ? "Ruošiamas pavyzdys…" : "✨ Pradėti meno detektyvo tyrimą"}
+            {pending ? (liveEnabled ? "Ruošiamas DI tyrimas…" : "Ruošiamas pavyzdys…") : "✨ Pradėti meno detektyvo tyrimą"}
           </button>
         </fieldset>
         {error && <p role="alert" className="mt-5 text-sm leading-7">{error}</p>}

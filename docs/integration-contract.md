@@ -69,7 +69,15 @@ Kolekcijos demo adapteris jau paruoštas: `src/lib/demo-collection.ts` ir
 `CollectionRepository` sutartis `src/types/collection.ts`. Detalės A integracijai
 ir apribojimai: `docs/developer-b-collection.md`. Demo įrašai automatiškai į paskyrą neperkeliami.
 Gemini adapteris naudos A serverio sąsają; joks raktas nekeliauja į naršyklę.
-DI rezultatų schemą ir klaidų formatą A ir B suderins prieš integraciją.
+4 etape A prijungė esamą B DI schemą prie serverio ir atskiro paskyros adapterio.
+`generationId` privalomas tik tikram rezultatui; demo sutartis suderinama su senais įrašais.
+API klaidos: `{error:{code,message}}`, privatūs atsakymai necache'inami.
+`POST /api/investigations` priima tik `generationId`, modelio JSON iš naršyklės nepriimamas.
+`GET` grąžina tik savininko išsaugotus rezultatus; `DELETE` pašalina tik jo rezultatą.
+AI migracija atskirai patvirtinta ir pritaikyta; tikri SQL RLS / kvotų testai praėjo.
+Vienas tikras standalone Gemini bandymas praėjo; visas generavimo / išsaugojimo
+srautas dar nepatikrintas. Rezultatai: `docs/phase-4-gemini-acceptance.md`.
+Žr. `docs/phase-4-a-report.md` ir `docs/gemini-setup.md`.
 Paruošta B parametrų forma ir demo adapteris. Sutartys:
 `src/types/investigation.ts`, tikrinimas ir vietinis šablonas `src/lib/investigation.ts`.
 Integracijos detalės: `docs/developer-b-investigation.md`. A `/api/ai` B nekūrė.
@@ -83,7 +91,10 @@ demo rezultatai į paskyrą automatiškai nekeliami.
 Muziejaus vieša API naudojama su talpinimu podėlyje ir ribotomis užklausomis.
 Paveikslai tik su patikrintu `image_id` ir teisių informacija.
 Supabase Auth ir paskyros kolekcija jau naudoja tikrą projektą; patikrinta realiais
-naudotojais. Gemini ir AI tyrimų rezultatai tebėra demonstraciniai.
+naudotojais. Gemini serveris paruoštas, tačiau tikri tyrimai išjungti, kol nėra
+viso paskyros srauto priėmimo. Raktas ir modelis prijungti, viena tikra standalone
+užklausa patikrinta. AI migracija jau atskirai patvirtinta ir pritaikyta.
+Demo lieka prieinamas.
 Naudojant paslaugas tikrinti tuo metu galiojančias nemokamas kvotas;
 viršijus limitą rodyti klaidą, automatiškai nepereiti į mokamą paslaugą.
 

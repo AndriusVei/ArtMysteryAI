@@ -74,6 +74,10 @@ export function validateInvestigationResponse(value: unknown, expected: Investig
     mode: value.mode, request, generatedAt: value.generatedAt,
     result: { title: result.title, introduction: result.introduction, historicalContext, observations, questions, summary: result.summary },
   };
+  if (value.generationId !== undefined) {
+    if (typeof value.generationId !== "string" || !/^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/i.test(value.generationId)) return fail();
+    response.generationId = value.generationId;
+  }
   if (JSON.stringify(response).length > 128000) return fail();
   return response;
 }

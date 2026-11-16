@@ -7,14 +7,14 @@ export function InvestigationResultView({ response, headingId, headingRef }: {
 }) {
   return (
       <section aria-labelledby={headingId} className="mt-10 border border-line bg-white/40 p-5 sm:p-8">
-        <p className="eyebrow">Demonstracinis tyrimo pavyzdys</p>
+        <p className="eyebrow">{response.mode === "demo" ? "Demonstracinis tyrimo pavyzdys" : "Gemini sugeneruotas DI tyrimas"}</p>
         <h3 id={headingId} ref={headingRef} tabIndex={-1} className="mt-4 break-words text-2xl sm:text-3xl">{response.result.title}</h3>
         <p className="mt-4 text-sm leading-7 text-muted">{knowledgeLevels[response.request.knowledgeLevel]} · {investigationModes[response.request.investigationMode]} · {response.request.questionCount} klausimai · kūrinys #{response.request.artworkId}</p>
         <p className="mt-5 leading-8">{response.result.introduction}</p>
         {response.request.userPrompt && <div className="mt-6 border-l-2 border-line pl-4">
           <h4 className="text-sm font-semibold">Tavo papildomas prašymas</h4>
           <p className="mt-2 whitespace-pre-wrap break-words text-sm leading-7">{response.request.userPrompt}</p>
-          <p className="mt-2 text-xs text-muted">Šabloniniame pavyzdyje šis prašymas neapdorojamas.</p>
+          {response.mode === "demo" && <p className="mt-2 text-xs text-muted">Šabloniniame pavyzdyje šis prašymas neapdorojamas.</p>}
         </div>}
         <h4 className="mt-8 text-lg font-semibold">Muziejaus pateikti duomenys</h4>
         <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7">

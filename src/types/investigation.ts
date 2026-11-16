@@ -23,6 +23,7 @@ export interface InvestigationResult {
 }
 
 export interface InvestigationResponse {
+  generationId?: string;
   mode: "demo" | "live";
   request: InvestigationRequest;
   generatedAt: string;

@@ -79,7 +79,7 @@ try {
   await waitFor("document.querySelector('#research-level')?.value === 'beginner'");
   assert.equal(await evaluate("document.querySelector('#research-mode').value"), "detective_mystery");
   assert.equal(await evaluate("document.querySelector('#research-count').value"), "3");
-  assert.ok(await evaluate("document.querySelector('[aria-label=\"Tyrimo demonstracinis režimas\"]').textContent.includes('Gemini neprijungtas')"));
+  assert.ok(await evaluate("document.querySelector('[aria-label=\"Tyrimo demonstracinis režimas\"]').textContent.includes('vietinis pavyzdys')"));
   pass("default parameters and explicit demo notice");
 
   await setField("#research-level", "expert", "change");
