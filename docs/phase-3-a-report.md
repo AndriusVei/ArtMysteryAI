@@ -3,17 +3,24 @@
 Atnaujinimas po naudotojo prisijungimo per terminalą (2026-11-16): Supabase CLI
 prieiga patvirtinta, projektas „ArtMysteryAI“ rastas ir susietas su šiuo katalogu.
 Vieša konfigūracija įrašyta į ignoruojamą `.env.local`; Auth nustatymų HTTP 200
-patikra praėjo. Public schema pagal tik skaitymo SQL tuščia. Migracija vis dar
-nevykdyta, tikri auth/CRUD/RLS priėmimo scenarijai neatlikti. Toliau esanti
-vietinės dalies ataskaita aprašo pradinę būseną prieš šį prijungimą.
+patikra praėjo. Prieš migraciją public schema pagal tik skaitymo SQL buvo tuščia.
+Po atskiro „PATVIRTINU MIGRACIJĄ PROJEKTE ArtMysteryAI“ pritaikytas vienintelis
+failas `202611160001_private_collections.sql` per Supabase CLI `db push` su
+`--skip-vault`, be seed ar papildomų roles failų. Istorijoje versija `202611160001`.
+Visose 3 lentelėse RLS įjungta, yra 12 politikų. Anoniminės CRUD teisės atšauktos;
+3 tikros anoniminės SELECT užklausos atmestos HTTP 401 / PostgreSQL 42501.
+Galutinis dry-run rodo `upToDate=true`. Keturios vietinės programos patikros
+(API 401, profilio nukreipimas, aktyvios login/register formos) praėjo.
+Testinės paskyros dar nekurtos; tikri login/CRUD/dviejų naudotojų RLS scenarijai
+neatlikti. Ankstesnės vietinio kodo patikros aprašytos toliau.
 
 Data: 2026-11-16. Patvirtinimas: „PATVIRTINU 3 ETAPĄ“.
 Pradinis commit: `75f5ef87eb4c648e8a49ebb5979f53d5d86222fa`.
 Vietinė šaka: `feature/a-auth-collection`.
 Aplinka: Windows, PowerShell, Node.js 26.13.0, npm 12.2.2, Next.js 16.4.6, Edge.
 
-**3 etapo priėmimas dar neužbaigtas.** Naudotojas patvirtino, kad Supabase
-projekto dar nėra. Lokalus kodas, testai ir migracija paruošti; tikros
+**3 etapo priėmimas dar neužbaigtas.** Supabase projektas jau prijungtas,
+migracija pritaikyta. Lokalus kodas ir testai paruošti; tikros
 registracijos, el. pašto, sesijų, bazės saugojimo ir dviejų naudotojų RLS
 patikros neatliktos. 4 etapas nepradedamas.
 
@@ -64,8 +71,10 @@ patikros neatliktos. 4 etapas nepradedamas.
 | Esamas B prieinamumo/demo scenarijus | **30 PASS, 0 FAIL** | Tikras muziejaus vaizdas, demo redagavimas, fokusas ir tyrimai |
 | `npm audit --omit=dev` | 0 žinomų spragų | Nėra viso saugumo garantija |
 | Visas npm audit | 7 moderate, 0 high, 0 critical | minimatch ir ESLint/TypeScript kūrimo įrankių grandinė |
-| Supabase migracija ir reali SQL vykdymo patikra | **NOT TESTED** | Nėra projekto ar vietinio PostgreSQL; SQL nevykdytas |
-| Tikra registracija, laiškas, login/logout, sesija po refresh | **NOT TESTED** | Reikia prijungto Supabase |
+| Supabase migracija ir reali SQL vykdymo patikra | **PASS** | Pritaikyta patvirtinta migracija, 3 lentelės, 12 politikų, teisių patikra |
+| Anoniminės SELECT užklausos per REST | **3 PASS, 0 FAIL** | Visos 3 lentelės grąžino 401 / 42501 |
+| Programos prieiga be sesijos po prijungimo | **4 PASS, 0 FAIL** | Kolekcijos API 401, profilio 307, aktyvios abi paskyros formos |
+| Tikra registracija, laiškas, login/logout, sesija po refresh | **NOT TESTED** | Reikia patvirtintų testinių paskyrų |
 | Dviejų tikrų naudotojų RLS ir CRUD | **NOT TESTED** | Paruoštas scenarijus; nepaleistas |
 
 HTTP scenarijus patikrino: login/register formos rodomos aiškiai išjungtos be
@@ -131,8 +140,10 @@ testinius įrašus; jam reikia atskiro leidimo, dviejų izoliuotų paskyrų ir a
 
 ## Git, partneris ir likęs priėmimas
 
-Naujo commit, push, merge, deploy, cloud projekto ar tikros DB pakeitimo nėra.
-Pakeitimai vietiniai ir neįtraukti į staging. Siūloma commit žinutė tik po
+Šio migracijos vykdymo metu Git commit/push/merge ar deploy neatlikti; Supabase
+DB migracija įvykdyta pagal atskirą leidimą. Naudotojo ankstesni Git veiksmai
+nekeičiami. Ataskaitos atnaujinimai vietiniai ir neįtraukti į staging.
+Pradinio kodo etapo siūlyta commit žinutė buvo tik po
 atskiro patvirtinimo: `feat: paruošti Supabase autentifikaciją ir paskyros kolekciją`.
 Prieš commit: `git status`, konkrečių failų diff ir paslapčių patikra; po
 pasirinktų failų staging – `git diff --cached --check` ir `git diff --cached`.

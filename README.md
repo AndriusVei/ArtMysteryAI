@@ -18,8 +18,10 @@ detalės. Kriterijai saugomi URL; rodomi originalo kalbos metaduomenys ir
 viešo naudojimo kūriniai su vaizdo identifikatoriumi.
 3 etapo vietinis autentifikacijos ir paskyros kolekcijos kodas paruoštas:
 `/register`, `/login`, `/profile` ir atskiras Supabase saugojimo adapteris.
-Supabase projektas dar nesukurtas, migracija nepritaikyta, todėl tikros sesijos
-ir dviejų naudotojų RLS dar nepatikrinti. Be konfigūracijos išlieka demo režimas.
+Supabase projektas prijungtas, patvirtinta migracija pritaikyta: 3 lentelės,
+12 RLS politikų, anoniminė prieiga uždrausta ir patikrinta tiesiogiai.
+Tikros sesijos ir dviejų prisijungusių naudotojų izoliacija dar nepatikrinti.
+Be konfigūracijos išlieka demo režimas.
 Prijungimas: [Supabase instrukcija](docs/supabase-setup.md).
 Gemini ir tikrų AI tyrimų paskyros saugojimas priklauso 4 etapui.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet

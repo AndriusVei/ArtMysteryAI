@@ -30,8 +30,10 @@ autoriaus filtras, puslapiavimas, kortelės ir nuorodos į B detales.
 esamos B detalių ir vaizdų funkcijos nekeistos. Rezultatai ir ribos:
 `docs/phase-2-a-report.md`.
 3 etape paruošti `/login`, `/register`, `/profile`, Supabase SSR slapukai,
-serverio sesijos patikra ir paskyros kolekcijos API. Konfigūracijos dar nėra;
-tikros sesijos ir RLS nepatvirtinti. Žr. `docs/supabase-setup.md` ir
+serverio sesijos patikra ir paskyros kolekcijos API. Supabase konfigūracija
+prijungta, patvirtinta migracija pritaikyta; RLS politikos ir anoniminės prieigos
+draudimas patikrinti. Tikros sesijos ir dviejų prisijungusių naudotojų izoliacija
+dar nepatvirtinti. Žr. `docs/supabase-setup.md` ir
 `docs/phase-3-a-report.md`. Tai nėra užbaigto 3 etapo priėmimo žyma.
 Nekurti pakartotinio Next.js pagrindo kitame kataloge.
 

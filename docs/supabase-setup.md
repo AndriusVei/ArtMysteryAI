@@ -9,10 +9,18 @@
 - Viešas Auth nustatymų adresas grąžino HTTP 200: email registracija įjungta,
   naujų registracijų draudimas išjungtas, automatinis email patvirtinimas išjungtas
   (vartotojas turi patvirtinti laišką).
-- Tik skaitymo SQL patvirtino, kad public schemoje lentelių nėra.
+- Prieš migraciją tik skaitymo SQL patvirtino, kad public schema buvo tuščia.
 - CLI susiejimo metaduomenys `supabase/.temp/` papildomai ignoruojami Git.
-- Migracija dar nevykdyta, paskyros ir jų duomenys nekuriami. Prieš migraciją
-  reikia atskiro konkretaus leidimo pagal MASTER PROMPT 19 skyrių.
+- Gavus „PATVIRTINU MIGRACIJĄ PROJEKTE ArtMysteryAI“, sėkmingai pritaikyta
+  `202611160001_private_collections.sql`. Istorijoje yra versija `202611160001`;
+  galutinis dry-run patvirtino, kad laukiančių migracijų nėra.
+- Sukurtos 3 lentelės su įjungta RLS ir 12 nuosavybės politikų. Anoniminių
+  SELECT/INSERT/UPDATE/DELETE teisių nėra. Trys realios anoniminės SELECT
+  užklausos grąžino HTTP 401 ir SQL kodą 42501.
+- Vietinė programa be sesijos grąžina 401 kolekcijos API, profilį nukreipia į
+  login, o login/register formos aktyvios: 4 PASS, 0 FAIL.
+- Testinės paskyros ir jų duomenys dar nekuriami. Tikras login/logout,
+  laiško patvirtinimas ir dviejų prisijungusių naudotojų izoliacija dar nepatikrinti.
 
 Paruoštas vietinis kodas ir prijungtas projektas. Toliau pateikta bendra instrukcija nėra
 automatinis leidimas kurti debesijos išteklius ar vykdyti SQL. Prieš agentui tai
