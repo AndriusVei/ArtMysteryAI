@@ -20,11 +20,13 @@ const translations: Record<number, ArtworkTranslation> = {
 };
 
 /** Pasikeitus muziejaus šaltiniui, seno vertimo nerodome kaip dabartinio. */
-export function getArtworkTranslation(artwork: Artwork): ArtworkTranslation | null {
-  const translation = translations[artwork.id];
-  if (!translation) return null;
+export function artworkTextFingerprint(artwork: Artwork): string {
   const source = [artwork.id, artwork.title, artwork.artistDisplay, artwork.date,
     artwork.medium, artwork.dimensions, artwork.type, artwork.description, artwork.creditLine];
-  const fingerprint = createHash("sha256").update(JSON.stringify(source)).digest("hex");
-  return fingerprint === translation.sourceFingerprint ? translation : null;
+  return createHash("sha256").update(JSON.stringify(source)).digest("hex");
+}
+
+export function getArtworkTranslation(artwork: Artwork): ArtworkTranslation | null {
+  const translation = translations[artwork.id];
+  return translation && artworkTextFingerprint(artwork) === translation.sourceFingerprint ? translation : null;
 }

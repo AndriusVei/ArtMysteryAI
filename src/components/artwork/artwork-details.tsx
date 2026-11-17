@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Artwork } from "@/types/artwork";
 import type { ArtworkTranslation } from "@/types/artwork-translation";
 import { ArtworkImage } from "./artwork-image";
@@ -10,9 +10,46 @@ import { InvestigationPanel } from "@/components/investigation/investigation-pan
 
 export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; translation: ArtworkTranslation | null }) {
   const [language, setLanguage] = useState<"lt" | "en">(translation ? "lt" : "en");
-  const translated = language === "lt" && translation !== null;
-  const text = translated ? { ...artwork, ...translation.text } : artwork;
+  const [availableTranslation, setAvailableTranslation] = useState(translation);
+  const [loading, setLoading] = useState(false);
+  const [translationError, setTranslationError] = useState<string | null>(null);
+  const request = useRef<AbortController | null>(null);
+  useEffect(() => () => request.current?.abort(), []);
+  const translated = language === "lt" && availableTranslation !== null;
+  const text = translated ? { ...artwork, ...availableTranslation.text } : artwork;
   const textLanguage = translated ? "lt" : "en";
+
+  async function selectLithuanian() {
+    if (availableTranslation) { setLanguage("lt"); return; }
+    if (request.current) return;
+    const controller = new AbortController();
+    request.current = controller;
+    setLoading(true);
+    setTranslationError(null);
+    try {
+      const response = await fetch(`/api/artworks/${artwork.id}/translation`, { signal: controller.signal });
+      const data = await response.json();
+      if (controller.signal.aborted) return;
+      if (!response.ok) throw new Error(data.error || "Vertimo nepavyko gauti. Pabandyk dar kartą.");
+      if (data.translation?.language !== "lt" || typeof data.translation.text?.title !== "string") {
+        throw new Error("Vertimo nepavyko gauti. Pabandyk dar kartą.");
+      }
+      setAvailableTranslation(data.translation);
+      setLanguage("lt");
+    } catch (error) {
+      if (!controller.signal.aborted) setTranslationError(error instanceof Error ? error.message : "Vertimo nepavyko gauti. Pabandyk dar kartą.");
+    } finally {
+      if (request.current === controller) { request.current = null; setLoading(false); }
+    }
+  }
+
+  function selectOriginal() {
+    request.current?.abort();
+    request.current = null;
+    setLoading(false);
+    setTranslationError(null);
+    setLanguage("en");
+  }
   const facts = [
     ["Autorius", text.artistDisplay ?? artwork.artist],
     ["Sukūrimo data", text.date],
@@ -26,23 +63,29 @@ export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; tra
       <div className="flex flex-wrap items-center justify-between gap-6">
         <Link href="/explore" className="text-sm underline decoration-gold underline-offset-8">← Atrasti meną</Link>
         <div role="group" aria-label="Kūrinio teksto kalba" className="flex flex-wrap border border-line text-sm">
-          <button type="button" onClick={() => setLanguage("lt")} disabled={!translation} aria-pressed={translated}
+          <button type="button" onClick={selectLithuanian} disabled={loading} aria-pressed={translated} aria-busy={loading}
             className={`min-h-12 px-5 py-3 disabled:cursor-not-allowed disabled:opacity-50 ${translated ? "bg-ink text-paper" : "hover:bg-line"}`}>
-            Lietuviškai
+            {loading ? "Verčiama…" : "Lietuviškai"}
           </button>
-          <button type="button" onClick={() => setLanguage("en")} aria-pressed={!translated}
+          <button type="button" onClick={selectOriginal} aria-pressed={!translated}
             className={`min-h-12 px-5 py-3 ${!translated ? "bg-ink text-paper" : "hover:bg-line"}`}>
             Originalo kalba
           </button>
         </div>
       </div>
-      {!translation && <p role="status" className="mt-5 text-sm leading-7 text-muted">Šio kūrinio lietuviškas vertimas dar neparuoštas. Rodomas originalas.</p>}
+      <p role="status" aria-live="polite" className="mt-5 text-sm leading-7 text-muted">
+        {loading ? "Ruošiamas lietuviškas vertimas. Gali užtrukti iki minutės. Kol lauki, gali skaityti originalą."
+          : translationError ?? (!availableTranslation ? "Pasirink „Lietuviškai“, kad perskaitytum automatinį kūrinio teksto vertimą." : "")}
+      </p>
       <header className="pb-10 pt-10 sm:pb-14">
         <p className="eyebrow">Art Institute of Chicago · kūrinys #{artwork.id}</p>
         <h1 lang={textLanguage} className="mt-5 break-words text-4xl sm:text-6xl lg:text-7xl">{text.title}</h1>
         <p className="mt-5 text-lg text-muted">{artwork.artist ?? "Autorius nenurodytas"}{text.date ? ` · ${text.date}` : ""}</p>
         <p role="status" className="mt-4 text-xs leading-6 text-muted">
-          {translated ? "Lietuviškas muziejaus teksto vertimas. Tai nėra oficialus muziejaus vertimas." : "Originalūs muziejaus duomenys anglų kalba."}
+          {translated ? availableTranslation.automatic
+            ? "Automatinis vertimas į lietuvių kalbą („MyMemory“). Gali pasitaikyti netikslumų; originalą gali peržiūrėti bet kada."
+            : "Lietuviškas muziejaus teksto vertimas. Tai nėra oficialus muziejaus vertimas."
+            : "Originalūs muziejaus duomenys anglų kalba."}
         </p>
       </header>
       <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-14">
@@ -90,7 +133,7 @@ export function ArtworkDetails({ artwork, translation }: { artwork: Artwork; tra
           </> : <p className="leading-8 text-muted">Muziejus šio kūrinio aprašymo nepateikė. Papildomos istorijos ar autoriaus ketinimų nepridedame.</p>}
         </div>
       </section>
-      <InvestigationPanel key={artwork.id} artwork={text} />
+      <InvestigationPanel key={artwork.id} artwork={artwork} />
     </article>
   );
 }
