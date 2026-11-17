@@ -10,6 +10,10 @@ Tikro laiško E2E, dviejų paskyrų Production atskyrimas ir 100 bandymų matric
 dar neatlikti; visas 6 etapas neužbaigtas. Toliau išlaikoma pradinio pasiruošimo
 istorinė ataskaita, kurios teiginiai apie dar nesukurtą projektą aprašo tuometinę būklę.
 
+Papildomai Production įjungtas tikras Gemini režimas pagal atskirą leidimą:
+[DI įjungimo ataskaita](production-ai-activation.md). 6 konfigūracijos ir
+prieigos patikros PASS, modelio užklausų 0; tikrą generavimą vartotojas bandys pats.
+
 ## Pradinė pasiruošimo ataskaita
 
 2026-11-17. **Vietinis planas paruoštas; publikavimas ir galutinis vertinimas
