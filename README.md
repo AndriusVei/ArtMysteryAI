@@ -41,9 +41,20 @@ HTTP metaduomenis, nekeičia prieigos teisių ir nesiunčia testinių užklausų
 5 etapas užbaigtas vietinėmis patikromis, įskaitant švarią npm ci / lint /
 typecheck / test / build seką. GitHub CI dar nepaleistas; jis turi praeiti
 vartotojo sukurtame PR prieš merge. CI rezultatas nekeičia vietinio DI jungiklio.
-Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
-„Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
-vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
+Kiekvieno kūrinio puslapyje veikia „Lietuviškai / Originalo kalba“ pasirinkimas.
+Monet „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kiti kūriniai
+verčiami tik paspaudus „Lietuviškai“, naudojant nemokamą „MyMemory“ API be rakto.
+Verčiami pavadinimas, muziejaus aprašymas ir pateikti metaduomenys; originalas
+išlieka ir gali būti grąžintas bet kada, taip pat laukiant vertimo.
+Automatiniai vertimai pažymėti. Nemokamos anoniminės paslaugos limitas yra
+5000 ženklų per dieną bendram serverio IP; pasiekus limitą rodomas pranešimas.
+Vertimo segmentai iki paros saugomi riboto dydžio serverio atmintyje,
+o sėkmingas API atsakymas naršyklėje galioja valandą. Perjungiant kalbą tame
+pačiame puslapyje pakartotinių užklausų nereikia. Trūkstami aprašymai nekuriami.
+Paslaugos [API dokumentacija](https://mymemory.translated.net/doc/spec.php) ir
+[naudojimo limitai](https://mymemory.translated.net/doc/usagelimits.php).
+Vietinė naršyklės patikra: `node scripts/check-translation-browser.mjs http://localhost:3000`
+(vienas tikras nemokamas vertimas, laikinas Edge profilis).
 Mokamų užklausų ir automatinių publikavimo veiksmų neatlikta. Privatūs raktai
 laikomi tik ignoruojamame `.env.local`, jų į Git kelti negalima.
 

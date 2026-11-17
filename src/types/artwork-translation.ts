@@ -8,5 +8,6 @@ export type ArtworkText = Pick<Artwork,
 export interface ArtworkTranslation {
   language: "lt";
   sourceFingerprint: string;
+  automatic?: boolean;
   text: ArtworkText;
 }
