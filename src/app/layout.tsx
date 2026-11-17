@@ -1,3 +1,4 @@
+import { DeveloperModeProvider, DeveloperModePanel } from "@/components/diagnostics/developer-mode";
 import type { Metadata } from "next";
 import { SiteHeader } from "@/components/site-header";
 import { CollectionProvider } from "@/components/collection/collection-provider";
@@ -18,8 +19,11 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     <html lang="lt">
       <body className="flex min-h-screen flex-col">
         <a href="#main-content" className="skip-link">Pereiti prie turinio</a>
+        <DeveloperModeProvider key={identity.mode === "account" ? identity.userId : identity.mode}>
         <SiteHeader signedIn={identity.mode === "account"} />
+        <DeveloperModePanel />
         <CollectionProvider identity={identity}><InvestigationProvider identity={identity} liveEnabled={liveEnabled} storageEnabled={storageEnabled}><main id="main-content" tabIndex={-1} className="flex-1">{children}</main></InvestigationProvider></CollectionProvider>
+        </DeveloperModeProvider>
         <footer className="border-t border-line px-6 py-7 text-sm text-muted sm:px-10">
           <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3">
             <span>ArtMystery AI</span>

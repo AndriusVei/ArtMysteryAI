@@ -1,3 +1,5 @@
+import { collectDiagnostics } from "@/lib/diagnostics-server";
+import { PublishDiagnostics } from "@/components/diagnostics/developer-mode";
 import Link from "next/link";
 import { SearchForm } from "@/components/artwork/search-form";
 import { SearchCard } from "@/components/artwork/search-card";
@@ -10,13 +12,14 @@ export default async function ExplorePage({ searchParams }: { searchParams: Prom
   const q = typeof params.q === "string" ? params.q.slice(0, 120) : "";
   const artist = typeof params.artist === "string" ? params.artist.slice(0, 120) : "";
   const submitted = ["q", "artist", "page", "submitted"].some((key) => params[key] !== undefined);
-  const result = submitted ? await searchArtworks({ q: params.q, artist: params.artist, page: params.page }) : null;
+  const { value: result, records } = await collectDiagnostics(async () => submitted ? await searchArtworks({ q: params.q, artist: params.artist, page: params.page }) : null);
   const pageUrl = (page: number) => `/explore?${new URLSearchParams({ q, artist, page: String(page) })}`;
 
   return <section className="mx-auto max-w-6xl px-6 py-14 sm:px-10 sm:py-20">
     <p className="eyebrow">Art Institute of Chicago</p>
     <h1 className="mt-4 text-4xl sm:text-6xl">Atrasti meną</h1>
     <p className="mt-6 max-w-2xl text-lg leading-8 text-muted">Atrask tikrus muziejaus kūrinius pagal pavadinimą, raktažodį ar autorių. Pasirink kūrinį ir atverk jo istoriją.</p>
+    <PublishDiagnostics records={records} />
     <SearchForm key={`${q}\u0000${artist}`} q={q} artist={artist} />
     {!result && <p className="mt-9 leading-8 text-muted">Nuo ko pradėsi? Pabandyk „Monet“, „water lilies“ arba autoriaus lauke įrašyk „Vincent van Gogh“.</p>}
     {result && !result.ok && <div role="alert" className="mt-9 border-l-2 border-gold bg-white/40 p-6">

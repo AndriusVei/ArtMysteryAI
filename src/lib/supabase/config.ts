@@ -1,3 +1,5 @@
+import { diagnosticFetch } from "../diagnostics-server.ts";
+import { supabaseEndpoint } from "../diagnostics-core.ts";
 export type SupabaseConfiguration = { status: "missing" | "invalid" } | { status: "ready"; url: string; key: string };
 
 export function supabaseConfiguration(env: Record<string, string | undefined> = process.env): SupabaseConfiguration {
@@ -25,7 +27,7 @@ export function configuredSiteOrigin(value = process.env.SITE_URL): string | nul
   } catch { return null; }
 }
 
-export const boundedSupabaseFetch: typeof fetch = (input, init) => fetch(input, {
+export const boundedSupabaseFetch: typeof fetch = (input, init) => diagnosticFetch(fetch, "supabase", supabaseEndpoint(input))(input, {
   ...init, cache: "no-store", signal: init?.signal
     ? AbortSignal.any([init.signal, AbortSignal.timeout(10000)]) : AbortSignal.timeout(10000),
 });

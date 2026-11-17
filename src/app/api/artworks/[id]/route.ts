@@ -1,3 +1,4 @@
+import { traceRoute } from "@/lib/diagnostics-server";
 import { getArtwork, artworkErrorMessages } from "@/lib/artic";
 import type { ArtworkErrorCode } from "@/types/artwork";
 
@@ -6,7 +7,7 @@ const statusCodes: Record<ArtworkErrorCode, number> = {
   timeout: 504, unavailable: 502, invalid_response: 502,
 };
 
-export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+export const GET = traceRoute(async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const result = await getArtwork(id);
   if (!result.ok) {
@@ -16,4 +17,4 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
     });
   }
   return Response.json({ data: result.artwork }, { headers: { "Cache-Control": "public, max-age=60, s-maxage=3600" } });
-}
+});

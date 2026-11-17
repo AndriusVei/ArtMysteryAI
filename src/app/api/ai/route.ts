@@ -1,3 +1,4 @@
+import { traceRoute } from "@/lib/diagnostics-server";
 import { randomUUID } from "node:crypto";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { requireSameOrigin, readCollectionBody, AccountCollectionError } from "@/lib/account-collection";
@@ -13,7 +14,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
-export async function POST(request: Request) {
+export const POST = traceRoute(async function POST(request: Request) {
   try {
     try { requireSameOrigin(request); } catch { throw new AIError("forbidden"); }
     const client = await createSupabaseServer();
@@ -47,4 +48,4 @@ export async function POST(request: Request) {
     });
     return aiJSON({ data: result });
   } catch (cause) { return aiFailure(cause); }
-}
+});

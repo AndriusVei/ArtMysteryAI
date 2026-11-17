@@ -1,3 +1,4 @@
+import { traceRoute } from "@/lib/diagnostics-server";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { AccountCollectionError, parseAccountCollectionItem, readCollectionBody, requireSameOrigin, validateCollectionMutation } from "@/lib/account-collection";
 import { getArtwork } from "@/lib/artic";
@@ -51,7 +52,7 @@ async function handle(request: Request, method: "GET" | "POST" | "PATCH" | "DELE
     return response({ error: { code: error.code, message: error.message } }, error.status);
   }
 }
-export const GET = (request: Request) => handle(request, "GET");
-export const POST = (request: Request) => handle(request, "POST");
-export const PATCH = (request: Request) => handle(request, "PATCH");
-export const DELETE = (request: Request) => handle(request, "DELETE");
+export const GET = traceRoute((request: Request) => handle(request, "GET"));
+export const POST = traceRoute((request: Request) => handle(request, "POST"));
+export const PATCH = traceRoute((request: Request) => handle(request, "PATCH"));
+export const DELETE = traceRoute((request: Request) => handle(request, "DELETE"));

@@ -30,6 +30,8 @@ globalThis.fetch = async (input, init) => {
         observations: ["Šis turinys skirtas tik serverio ir saugyklos integracijos patikrai."],
         questions: Array.from({ length: count }, () => ({ question: "Koks šaltinis pateiktas?", suggestedAnswer: "Patikrink muziejaus duomenis." })), summary: "Tik testinis atsakymas." };
       process.send?.({ type: "fixture_generation", calls: ++fixtures });
+      const errorStatus = Number(process.env.ARTMYSTERY_TEST_GEMINI_ERROR);
+      if ([401, 403, 429, 503].includes(errorStatus)) return Response.json({ error: { message: "TEST_SECRET_PROVIDER_BODY" } }, { status: errorStatus });
       return Response.json({ id: "fixture", status: "completed", steps: [{ type: "model_output", content: [{ type: "text", text: JSON.stringify(result) }] }] });
     }
     if (diagnosticOnly || calls >= modelLimit) return Response.json({ error: { code: 429, message: "Local test budget exhausted" } }, { status: 429 });

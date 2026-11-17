@@ -1,3 +1,4 @@
+import { traceRoute } from "@/lib/diagnostics-server";
 import { createSupabaseServer } from "@/lib/supabase/server";
 import { readCollectionBody, requireSameOrigin } from "@/lib/account-collection";
 import { AIError, aiConfiguration, uuid } from "@/lib/ai-core";
@@ -38,6 +39,6 @@ async function handle(request: Request, method: "GET" | "POST" | "DELETE") {
     return aiJSON({ data: savedFromRow(updated.data, owner, config.secret) });
   } catch (cause) { return aiFailure(cause); }
 }
-export const GET = (request: Request) => handle(request, "GET");
-export const POST = (request: Request) => handle(request, "POST");
-export const DELETE = (request: Request) => handle(request, "DELETE");
+export const GET = traceRoute((request: Request) => handle(request, "GET"));
+export const POST = traceRoute((request: Request) => handle(request, "POST"));
+export const DELETE = traceRoute((request: Request) => handle(request, "DELETE"));

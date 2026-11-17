@@ -1,3 +1,5 @@
+import { collectDiagnostics } from "@/lib/diagnostics-server";
+import { PublishDiagnostics } from "@/components/diagnostics/developer-mode";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getArtwork, artworkErrorMessages } from "@/lib/artic";
@@ -9,7 +11,7 @@ export const metadata = { title: "Kūrinio istorija" };
 
 export default async function ArtworkPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const result = await getArtwork(id);
+  const { value: result, records } = await collectDiagnostics(() => getArtwork(id));
   if (!result.ok) {
     if (result.code === "invalid_id" || result.code === "not_found") notFound();
     return (
@@ -17,11 +19,12 @@ export default async function ArtworkPage({ params }: { params: Promise<{ id: st
         <p className="eyebrow">Muziejaus duomenys nepasiekiami</p>
         <h1 className="mt-5 text-4xl sm:text-5xl">Istorijai reikia akimirkos.</h1>
         <p role="status" className="mt-6 text-lg leading-8 text-muted">{artworkErrorMessages[result.code]}</p>
+        <PublishDiagnostics records={records} />
         <ArtworkRetry />
         <Link href="/explore" className="mt-7 block underline underline-offset-8">Grįžti į meno paiešką</Link>
       </section>
     );
   }
   const { artwork } = result;
-  return <ArtworkDetails key={artwork.id} artwork={artwork} translation={getArtworkTranslation(artwork)} />;
+  return <><PublishDiagnostics records={records} /><ArtworkDetails key={artwork.id} artwork={artwork} translation={getArtworkTranslation(artwork)} /></>;
 }

@@ -1,3 +1,4 @@
+import { diagnosticFetch } from "./diagnostics-server.ts";
 import type { Artwork, ArtworkErrorCode, ArtworkResult, ArtworkImageResult } from "@/types/artwork";
 import type { ArtworkSearchQuery, ArtworkSearchData, ArtworkSearchResult, ArtworkSearchErrorCode } from "@/types/artwork-search";
 
@@ -66,7 +67,7 @@ export async function searchArtworks(input: { q?: unknown; artist?: unknown; pag
     query: { bool: { filter, ...(query.q ? { must: [{ multi_match: { query: query.q, fields: ["title^3", "artist_title"], operator: "and" } }] } : {}) } },
   }));
   try {
-    const response = await fetcher(url.href, {
+    const response = await diagnosticFetch(fetcher, "artic", "/artworks/search")(url.href, {
       headers: { Accept: "application/json", "AIC-User-Agent": "ArtMystery AI" },
       signal: AbortSignal.timeout(10000), redirect: "error", next: { revalidate: 3600 },
     });
@@ -190,7 +191,7 @@ export async function getArtwork(value: string | number, fetcher: typeof fetch =
   const id = parseArtworkId(value);
   if (id === null) return { ok: false, code: "invalid_id" };
   try {
-    const response = await fetcher(`${API_BASE}/artworks/${id}?fields=${FIELDS}`, {
+    const response = await diagnosticFetch(fetcher, "artic", "/artworks/:id")(`${API_BASE}/artworks/${id}?fields=${FIELDS}`, {
       headers: { Accept: "application/json", "AIC-User-Agent": "ArtMystery AI" },
       signal: AbortSignal.timeout(10000),
       next: { revalidate: 3600 },
@@ -226,7 +227,7 @@ export async function getArtworkImage(value: string | number, fetcher: typeof fe
 
   const maxBytes = 8 * 1024 * 1024;
   try {
-    const response = await fetcher(result.artwork.image.url, {
+    const response = await diagnosticFetch(fetcher, "artic", "/iiif/2/:image")(result.artwork.image.url, {
       headers: { Accept: "image/jpeg", "AIC-User-Agent": "ArtMystery AI" },
       signal: AbortSignal.timeout(15000),
       redirect: "error",

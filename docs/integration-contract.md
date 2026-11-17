@@ -96,6 +96,10 @@ naudotojais. Gemini serveris ir visas paskyros srautas patikrinti, bet įprastas
 generavimas lieka išjungtas pagal ribotų bandymų leidimų apimtį. Jo įjungimui
 reikia atskiro leidimo. AI migracija jau atskirai patvirtinta ir pritaikyta.
 Demo lieka prieinamas.
+5 etape A pridėjo request scope saugią diagnostiką ir matomą Developer Mode.
+Esami B komponentai / repository sutartys išlaikyti; sesijos, RLS ir kvotos
+neatlaisvinamos. Duomenų žurnalas nesaugo body, prompt, raktų, filtrų ar paskyrų ID.
+Detalės ir vietinių patikrų rezultatai: `docs/developer-mode.md`, `docs/phase-5-a-report.md`.
 Naudojant paslaugas tikrinti tuo metu galiojančias nemokamas kvotas;
 viršijus limitą rodyti klaidą, automatiškai nepereiti į mokamą paslaugą.
 

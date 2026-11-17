@@ -1,3 +1,4 @@
+import { diagnosticFetch } from "./diagnostics-server.ts";
 import { GoogleGenAI } from "@google/genai";
 import type { Artwork } from "@/types/artwork";
 import type { InvestigationRequest } from "@/types/investigation";
@@ -6,7 +7,7 @@ import { AIError, AI_OUTPUT_TOKENS, AI_SYSTEM_INSTRUCTION, modelPrompt, modelSch
 /** Ribotas tik JSON atsakymas; API raktas lieka serverio antraštėje. */
 export function boundedGeminiFetch(fetcher: typeof fetch = fetch): typeof fetch {
   return async (input, init) => {
-    const response = await fetcher(input, { ...init, cache: "no-store", redirect: "error" });
+    const response = await diagnosticFetch(fetcher, "gemini", "/interactions")(input, { ...init, cache: "no-store", redirect: "error" });
     const max = 256000;
     if (Number(response.headers.get("content-length")) > max || !response.body) { await response.body?.cancel(); throw new AIError("invalid_response"); }
     const reader = response.body.getReader(); let size = 0; const chunks: Uint8Array[] = [];

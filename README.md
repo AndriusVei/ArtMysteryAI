@@ -35,6 +35,11 @@ Gemini prijungimo eiga: [instrukcija](docs/gemini-setup.md).
 Tikras Supabase / UI srautas su imituotu modeliu praėjo 16 patikrų;
 atskirai patvirtintas tikras 5 klausimų generavimas su 3.5 Flash-Lite — 10 patikrų.
 [Baigiamosios patikros rezultatai](docs/phase-4-e2e-acceptance.md).
+5 etape pridėtas saugus **🛠️ Developer Mode** po navigacija. Jis rodo tik
+HTTP metaduomenis, nekeičia prieigos teisių ir nesiunčia testinių užklausų.
+[Naudojimas](docs/developer-mode.md), [5 etapo vietinės patikros](docs/phase-5-a-report.md).
+Nuotolinio GitHub CI paleidimui dar reikia atskiro publikavimo leidimo ir
+patvirtintos nemokamos Actions apimties.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.
