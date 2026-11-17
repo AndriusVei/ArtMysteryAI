@@ -75,6 +75,10 @@ Neišjunkite TLS sertifikatų tikrinimo.
 
 ## Patikros
 
+6 etapo pasiruošimas: [Vercel publikavimo planas](docs/vercel-deployment.md),
+[galutinio vertinimo matrica](docs/final-evaluation.md) ir
+[A ataskaita](docs/phase-6-a-report.md). Tikras publikavimas dar neatliktas.
+
 ```powershell
 npm.cmd run lint
 npm.cmd run typecheck
