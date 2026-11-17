@@ -12,9 +12,9 @@ pašalinimas su patvirtinimu. Demo įrašai automatiškai neperkeliami į paskyr
 Kūrinio puslapyje yra B „Meno detektyvo“ forma. 4 etape pridėtas Gemini serveris
 ir paskyros tyrimų adapteris. Nauja AI DB migracija atskirai patvirtinta ir
 pritaikyta; raktas prijungtas ir tikras paskyros tyrimų srautas patikrintas su
-`gemini-3.5-flash-lite`. Bendras generavimas paliktas išjungtas pagal suteiktų
-ribotų bandymų leidimų apimtį; įjungimui reikia atskiro leidimo.
-Veikia aiškiai pažymėtas vietinis pavyzdys.
+`gemini-3.5-flash-lite`. Prisijungus tikras DI režimas veikia, kai serverio
+`AI_LIVE_ENABLED=true` ir konfigūracija tinkama. Išjungus rodomas aiškiai
+pažymėtas vietinis pavyzdys. Automatinės patikros generavimo neįjungia.
 Mygtukas „Išsaugoti pavyzdį“ saugo naršyklėje; `/investigations` leidžia peržiūrėti,
 filtruoti ir pašalinti. Demo įrašai į paskyrą automatiškai neperkeliami.
 A paieška veikia `/explore`: raktažodis, autoriaus filtras, abu kriterijai kartu,
@@ -38,8 +38,9 @@ atskirai patvirtintas tikras 5 klausimų generavimas su 3.5 Flash-Lite — 10 pa
 5 etape pridėtas saugus **🛠️ Developer Mode** po navigacija. Jis rodo tik
 HTTP metaduomenis, nekeičia prieigos teisių ir nesiunčia testinių užklausų.
 [Naudojimas](docs/developer-mode.md), [5 etapo vietinės patikros](docs/phase-5-a-report.md).
-Nuotolinio GitHub CI paleidimui dar reikia atskiro publikavimo leidimo ir
-patvirtintos nemokamos Actions apimties.
+5 etapas užbaigtas vietinėmis patikromis, įskaitant švarią npm ci / lint /
+typecheck / test / build seką. GitHub CI dar nepaleistas; jis turi praeiti
+vartotojo sukurtame PR prieš merge. CI rezultatas nekeičia vietinio DI jungiklio.
 Kūrinio puslapyje yra „Lietuviškai / Originalo kalba“ pasirinkimas. Monet
 „Water Lilies“ (16568) turi vietinį lietuvišką vertimą. Kitiems kūriniams, kol
 vertimų nėra, aiškiai rodomas originalas. Mokamų ar automatinių vertimo API nėra.

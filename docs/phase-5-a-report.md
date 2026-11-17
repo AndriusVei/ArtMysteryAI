@@ -1,17 +1,26 @@
 # 5 etapo A vietinės patikros ataskaita
 
+**5 etapas užbaigtas vietiniu priėmimu 2026-11-17.** Vartotojo sukurtas ir
+GitHub paskelbtas kodo commit: `960a85d62f4e423eabe6a958dd0d98fd7abccb40`.
+Papildomai patikrinta švari vietinė CI komandų seka su atskirai įdiegtomis
+priklausomybėmis: 5/5 komandų PASS. GitHub Actions šioms šakoms dar nevykdytas.
+MASTER PROMPT reikalavimas — GitHub patikros kiekviename PR **prieš merge**;
+ankstesnis šios ataskaitos reikalavimas laukti nuotolinio CI prieš vietinį
+5 etapo uždarymą buvo per griežtas. Tai nėra nuotolinio CI PASS ar leidimas merge.
+
 2026-11-17. Šaka `feature/a-diagnostics`, pradinis bendro projekto commit
 `6d6851ace4148705fce888a990d9e5b255c92598`. Prieš pakeitimus darbo medis buvo
 švarus ir GitHub `feature/a-gemini` rodė tą patį commit. B darbai neperrašyti.
 
-Ši ataskaita fiksuoja vietinį įgyvendinimą ir patikras prieš publikavimą.
+Toliau užfiksuotas vietinis įgyvendinimas ir pradinės patikros prieš publikavimą.
 **GitHub CI dar nepaleistas.** Saugykla privati, skaitymo metu Actions vykdymų
 `total_count=0`. Workflow paleidžiamas tik su pull_request. Jo / naujo PR
 paskelbimui reikalingas atskiras leidimas commit / push / PR, o Actions naudojimui
 — patvirtinta nemokama apimtis. Nuotolinio CI rezultato negalima pakeisti vietinių
-komandų rezultatu; prieš galutinį 5 etapo uždarymą jį reikia užfiksuoti PR Checks.
+komandų rezultatu; prieš PR sujungimą jį reikia užfiksuoti PR Checks.
 Vartotojas pasirinko: **„Commit, push ir PR atliksiu pats“**. Bendro projekto
-publikavimo agentas nevykdo; nemokamų Actions minučių likutis nepatvirtintas.
+publikavimo agentas nevykdo. Vėlesnė patikra patvirtino vartotojo commit / push;
+PR dar nesukurtas. Į planą įtraukto Actions naudojimo likutis nepatvirtintas.
 6 etapas nepradėtas; publikavimo į Vercel nebuvo.
 
 ## Kas įgyvendinta
@@ -58,6 +67,7 @@ priklausomybės nereikėjo.
 | SDK 401 / 403 / 429 / 503 | 4 iš naujų unit testų; kiekvienam 1 imituotas transporto kvietimas, be retries ir privataus tiekėjo body |
 | Tikra DB RLS / kvotų / užraktų patikra | PASS; `check-ai-database.sql`, visa transakcija atšaukta ROLLBACK |
 | Lint / typecheck | PASS |
+| Papildoma švari vietinė CI seka ties commit `960a85d` | npm ci, lint, typecheck, test, build — 5/5 PASS; atskiri node_modules, privati konfigūracija nekopijuota |
 | Produkcinis Next 16.4.6 Turbopack build | PASS izoliuotoje kopijoje |
 | Kliento bundle patikra | 17 failų, tikrų GEMINI_API_KEY / AI_SERVER_SECRET reikšmių nerasta |
 | Source / build atitiktis | 73 source failai sutampa su patikrinta build kopija |
@@ -96,18 +106,20 @@ galutiniai rezultatai aukščiau. Tarpiniai testiniai naudotojai taip pat išval
 
 Galutinis realus DB valymas: bandymo paskyrų 0, jų kolekcijos įrašų 0, jų
 AI tyrimų 0, aktyvių užraktų 0. Asmeninės paskyros nenaudotos. Kvotų skaitikliai
-neatstatyti. Įprastas Gemini jungiklis lieka išjungtas pagal ankstesnių leidimų ribas.
+neatstatyti. Ankstesnių automatinių bandymų metu įprastas Gemini jungiklis buvo
+išjungtas; vėliau jo reikšmę vartotojas keitė savarankiškai. Baigiamojoje švarioje
+CI kopijoje Gemini raktų / įjungimo nėra ir tikrų modelio užklausų nebuvo.
 
 Neatlikta: GitHub CI naujam PR, fizinių telefonų / ekrano skaitytuvų patikra,
 visas WCAG auditas, platesnis tikro modelio turinio vertinimas ir Vercel.
-Nėra naujo bendro projekto commit / push ar merge; mokomieji commit atskiri.
-Galutinis 5 etapo uždarymas laukia nuotolinio CI arba aiškaus vartotojo sprendimo
-publikavimą / CI atlikti savarankiškai.
+Bendro projekto commit / push atliko vartotojas (`960a85d`), ne agentas.
+Agentas bendro projekto merge nevykdė; mokomieji commit atskiri.
+Vietinis 5 etapo priėmimas užbaigtas; nuotolinis CI lieka atskira sąlyga prieš PR merge.
 
 ## Perdavimas vartotojui
 
-Vietiniai darbai ir numatytos vietinės patikros baigti. Vartotojas pats kurs
-commit, push ir PR. Šaka `feature/a-diagnostics`, siūloma PR bazė
+Vietiniai darbai ir numatytos vietinės patikros baigti. Vartotojas jau sukūrė
+commit ir push; PR dar kurs pats. Šaka `feature/a-diagnostics`, siūloma PR bazė
 `feature/a-gemini`; bendrų šakų merge nepatvirtintas. Paruoštas PR aprašas
 `.next/phase5-pr-description.md`. Siūloma commit žinutė:
 
@@ -128,6 +140,26 @@ Naršyklėje įjungti **🛠️ Developer Mode**, atverti kūrinį arba atlikti 
 patikrinti saugius endpoint šablonus ir „Išvalyti diagnostiką“. Automatizuotos
 naršyklės patikros komanda yra `docs/developer-mode.md`.
 
-Iki nuotolinio CI rezultato 5 etapas nežymimas visiškai priimtu GitHub aplinkoje.
+Nuotolinė GitHub CI patikra nežymima atlikta; ji privaloma prieš PR sujungimą.
 7 moderate dev audito radiniai fiksuoti; automatinio audit fix ar paketų / peer
 priklausomybių perkeitimo šiame etape nedaryta. 6 etapui leidimas negautas.
+
+## Baigiamoji švari komandų seka
+
+Komandos vykdytos `.next/phase5-clean-ci-20261117-final` kopijoje, tikri
+`.env.local`, kiti privatūs `.env` failai ir `.git` nekopijuoti. `node_modules`
+įdiegtas per npm ci, be junction į vartotojo veikiantį projektą. Naudoti įprasti
+Next / TypeScript / ESLint nustatymai; likę sekami failai pridėti iš `git archive`
+ir papildomai pakartotas viso failų rinkinio lint (PASS). `.env.example` yra tik šablonas.
+
+| Komanda | Exit | Trukmė |
+| --- | --- | --- |
+| npm.cmd ci | 0 | 99,5 s |
+| npm.cmd run lint | 0 | 17,9 s |
+| npm.cmd run typecheck | 0 | 7,1 s |
+| npm.cmd test | 0 | 2,7 s |
+| npm.cmd run build | 0 | 36,9 s |
+
+Įrodymai vietoje: `.next/phase5-clean-ci-result.json` ir atskirų žingsnių logai
+švarios kopijos kataloge. Windows patikra nepateikiama kaip GitHub Ubuntu
+runner vykdymas ar Vercel / produkcinės konfigūracijos patikra.
