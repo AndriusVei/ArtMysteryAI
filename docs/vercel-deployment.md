@@ -1,5 +1,11 @@
 # Vercel publikavimo planas
 
+Atnaujinta 2026-11-17: projektas jau paskelbtas adresu
+https://artmystery-ai.vercel.app. Adresų ir viešo rakto pataisos bei realūs
+patikrų rezultatai: [Production registracijos ataskaita](production-registration-acceptance.md).
+Toliau išlaikomas pradinis publikavimo planas; jo būsimo laiko formuluotės
+nėra dabartinės debesijos būsenos patvirtinimas.
+
 2026-11-17. Vartotojas turi Vercel paskyrą, projekto nėra. Tai planas:
 projektas nesukurtas, deploy nevykdytas, viešas URL nežinomas. 6 etapo
 leidimas apima vietinį pasiruošimą; publikavimui reikia atskiro leidimo.

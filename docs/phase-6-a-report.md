@@ -1,5 +1,17 @@
 # 6 A etapas: pasiruošimas publikavimui
 
+## Dabartinė būsena po atskiro publikavimo leidimo
+
+2026-11-17: Production https://artmystery-ai.vercel.app paskelbta, registracijos
+adresai suderinti, netinkamas viešas Supabase raktas atskirai patvirtinus pataisytas.
+Galutinės HTTP patikros 8 PASS / 0 FAIL. Žr.
+[Production registracijos patikrą](production-registration-acceptance.md).
+Tikro laiško E2E, dviejų paskyrų Production atskyrimas ir 100 bandymų matrica
+dar neatlikti; visas 6 etapas neužbaigtas. Toliau išlaikoma pradinio pasiruošimo
+istorinė ataskaita, kurios teiginiai apie dar nesukurtą projektą aprašo tuometinę būklę.
+
+## Pradinė pasiruošimo ataskaita
+
 2026-11-17. **Vietinis planas paruoštas; publikavimas ir galutinis vertinimas
 dar neatlikti.** Vartotojas turi Vercel paskyrą, projekto nėra.
 Pradinė šaka `feature/a-diagnostics`, HEAD `0dc28f7` („5 etapo pabaiga“),
